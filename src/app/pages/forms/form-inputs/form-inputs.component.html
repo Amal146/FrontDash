@@ -1,0 +1,287 @@
+<div class="row">
+  <div class="col-lg-6">
+    <nb-card style="display: flex;">
+      
+        <nb-card-header>Add Incident</nb-card-header>
+        <nb-card-body>
+          <!-- Title Field -->
+          <form (ngSubmit)="onSubmit()" #incidentForm="ngForm">
+          <div class="form-group">
+            
+            <label for="title" class="col-sm-3 label">Title</label>
+            <input
+              nbInput
+              fullWidth
+              shape="round"
+              placeholder="Rounded border"
+              type="text"
+              [(ngModel)]="incident.title"
+              class="form-control"
+              id="title"
+              name="title"
+              placeholder="Enter incident title"
+              required
+              #title="ngModel"
+            />
+            <div
+              [hidden]="title.valid || title.pristine"
+              class="alert alert-danger"
+            >
+              Title is required
+            </div>
+          </div>
+
+          <!-- Description Field -->
+          <div class="form-group">
+            <label for="description" class="col-sm-3 label">Description</label>
+            <textarea
+              rows="5"
+              nbInput
+              fullWidth
+              shape="round"
+              placeholder="Text Area"
+              [(ngModel)]="incident.description"
+              class="form-control"
+              id="description"
+              name="description"
+              placeholder="Enter incident description"
+              required
+              #description="ngModel"
+            ></textarea>
+            <div
+              [hidden]="description.valid || description.pristine"
+              class="alert alert-danger"
+            >
+              Description is required
+            </div>
+          </div>
+          
+          <!-- Severity Field -->
+          <div class="form-group row">
+            <label class="col-sm-3 label">Severity</label>
+            <div class="col-sm-9">
+              <nb-radio-group
+                [(ngModel)]="incident.severity"
+                name="severity"
+                required
+                #severity="ngModel"
+              >
+                <nb-radio value="Low">Low</nb-radio>
+                <nb-radio value="Medium">Medium</nb-radio>
+                <nb-radio value="High">High</nb-radio>
+                <nb-radio value="Critical">Critical</nb-radio>
+              </nb-radio-group>
+            </div>
+          </div>
+
+          <!-- Application Field -->
+          <div class="form-group row">
+            <label class="col-sm-3 label">Application</label>
+            <div class="col-sm-9">
+              <nb-radio-group
+                [(ngModel)]="appId"
+                name="application"
+                required
+                #applicationId="ngModel"
+              >
+                <nb-radio *ngFor="let app of applications" [value]="app.id">
+                  {{ app.name }}
+                </nb-radio>
+              </nb-radio-group>
+            </div>
+          </div>
+
+          <!-- Reported By Field -->
+          <div class="form-group">
+            <label for="reportedBy" class="col-sm-3 label">Reported By</label>
+            <input
+              nbInput
+              fullWidth
+              shape="round"
+              placeholder="Rounded border"
+              type="text"
+              type="email"
+              [(ngModel)]="reportedByEmail"
+              class="form-control"
+              id="reportedBy"
+              name="reportedBy"
+              placeholder="Enter reporter's email"
+              required
+            />
+          </div>
+
+          
+          <button
+            type="submit"
+            [disabled]="!incidentForm.form.valid"
+            class="btn btn-info"
+          >
+            Submit
+          </button>
+        </form>
+        </nb-card-body>
+      
+    </nb-card>
+
+    <!-- <nb-card>
+      <nb-card-header>Add Incident</nb-card-header>
+      <nb-card-body>
+        <input type="text" nbInput fullWidth placeholder="Project" />
+        <div class="full-name-inputs">
+          <input type="text" nbInput fullWidth placeholder="Nick" />
+          <input type="text" nbInput fullWidth placeholder="Last Name" />
+        </div>
+        <input type="password" nbInput fullWidth placeholder="Password" />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          shape="rectangle"
+          placeholder="Rectangle border"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          shape="semi-round"
+          placeholder="Semi-round border"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          shape="round"
+          placeholder="Rounded border"
+        />
+        <nb-select selected="1">
+          <nb-option value="1">Option 1</nb-option>
+          <nb-option value="2">Option 2</nb-option>
+        </nb-select>
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          placeholder="Disabled input"
+          disabled
+        />
+        <nb-select selected="1">
+          <nb-option value="1">Option 1</nb-option>
+          <nb-option value="2">Option 2</nb-option>
+        </nb-select>
+        <textarea
+          rows="5"
+          nbInput
+          fullWidth
+          shape="round"
+          placeholder="Text Area"
+        ></textarea>
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          fieldSize="small"
+          placeholder="Small Input"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          fieldSize="medium"
+          placeholder="Medium Input"
+        />
+        <nb-select selected="1">
+          <nb-option value="1">Option 1</nb-option>
+          <nb-option value="2">Option 2</nb-option>
+        </nb-select>
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          fieldSize="large"
+          placeholder="Large Input"
+        />
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+ <div class="col-lg-6">
+    <nb-card>
+      <nb-card-header>Select</nb-card-header>
+      <nb-card-body>
+        <nb-select selected="1">
+          <nb-option value="1">Option 1</nb-option>
+          <nb-option value="2">Option 2</nb-option>
+        </nb-select>
+      </nb-card-body>
+    </nb-card>
+
+    <nb-card>
+      <nb-card-header>Validation States</nb-card-header>
+      <nb-card-body>
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          status="info"
+          placeholder="Input with Info"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          status="success"
+          placeholder="Warning Input"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          status="warning"
+          placeholder="Danger Input"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          status="danger"
+          placeholder="Danger Input"
+        />
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          status="primary"
+          placeholder="Input with Primary"
+        />
+        <div class="validation-checkboxes">
+          <nb-checkbox status="success">Success Checkbox</nb-checkbox>
+          <nb-checkbox status="warning">Warning Checkbox</nb-checkbox>
+          <nb-checkbox status="danger">Danger Checkbox</nb-checkbox>
+        </div>
+      </nb-card-body>
+    </nb-card>
+
+    <nb-card>
+      <nb-card-header>Checkboxes & Radios</nb-card-header>
+      <nb-card-body class="checkbox-radio">
+        <div class="demo-items">
+          <nb-checkbox>Checkbox 1</nb-checkbox>
+          <nb-checkbox checked>Checkbox 2</nb-checkbox>
+        </div>
+        <div class="demo-items">
+          <nb-radio-group [(value)]="radioGroupValue">
+            <nb-radio [value]="'This is value 1'"> Radio 1 </nb-radio>
+            <nb-radio [value]="'This is value 2'"> Radio 2 </nb-radio>
+            <nb-radio [value]="'This is value 3'"> Radio 3 </nb-radio>
+          </nb-radio-group>
+        </div>
+        <div class="demo-items">
+          <nb-checkbox disabled>Disabled Checkbox</nb-checkbox>
+          <nb-radio-group disabled>
+            <nb-radio [value]="'Disabled Value'"> Disabled Radio </nb-radio>
+          </nb-radio-group>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>-->
+</div> 
