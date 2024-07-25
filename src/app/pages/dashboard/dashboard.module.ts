@@ -49,7 +49,6 @@ import { AppListComponent } from '../layout/app-list/app-list.component';
     NgxEchartsModule,
   ],
   declarations: [
-    AppListComponent,
     DashboardComponent,
     StatusCardComponent,
     TemperatureDraggerComponent,

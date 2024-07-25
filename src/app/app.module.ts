@@ -15,6 +15,7 @@ import { AuthGuard } from "./auth.guard";
 import { AppRoutingModule } from "./app-routing.module";
 
 import {
+  NbSelectModule,
   NbChatModule,
   NbDatepickerModule,
   NbDialogModule,
@@ -22,13 +23,15 @@ import {
   NbSidebarModule,
   NbToastrModule,
   NbWindowModule,
+  NbLayoutModule,
 } from "@nebular/theme";
 import { APP_BASE_HREF } from "@angular/common";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-   
+    NbLayoutModule,
+    NbSelectModule,
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,

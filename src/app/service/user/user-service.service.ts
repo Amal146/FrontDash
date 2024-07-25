@@ -41,4 +41,18 @@ export class UserService {
   deleteUser(id:number): Observable<Object>{
     return this.httpClient.delete(`${this.basUrl}/deleteUser?id=${id}`);
   }
+
+  
+//Check if user role , by user id and role id 
+existsByUserIdAndRoleId(userId: number, roleId: number): Observable<Boolean> {
+  return this.httpClient.get<Boolean>(`${this.basUrl}/exists/userRole?userId=${userId}&roleId=${roleId}`);
+}
+
+// GET Users by role id 
+getUsersByRoleId(roleId: number) : Observable<Object> {
+  return this.httpClient.get(`${this.basUrl}/UsersByRoleId?roleId=${roleId}`);
 } 
+
+
+} 
+

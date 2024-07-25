@@ -53,17 +53,17 @@ if (currentUser?.includes("ROLE_ADMIN")) {
       ],
     },
     {
-      title: 'Forms',
+      title: 'Assign Incidents',
       icon: 'edit-2-outline',
       children: [
         {
           title: 'Incident Form',
           link: '/pages/forms/inputs',
         },
-        {
-          title: 'Forms layouts',
-          link: '/pages/forms/layouts',
-        },
+        // {
+        //   title: 'Forms layouts',
+        //   link: '/pages/forms/layouts',
+        // },
         // {
         //   title: 'Buttons',
         //   link: '/pages/forms/buttons',

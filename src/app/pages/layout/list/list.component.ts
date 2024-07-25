@@ -11,7 +11,9 @@ import { ApplicationService } from '../../../service/application/application-ser
   styleUrls: ['list.component.scss'],
 })
 export class ListComponent implements OnInit {
-  users!: User[];
+  users!: {};
+  managers!: {};
+  admins!: {};
   applications!: Application[];
 
 
@@ -23,8 +25,14 @@ export class ListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userService.getUserList().subscribe(data => {
+    this.userService.getUsersByRoleId(1).subscribe(data => {
       this.users = data;
+    });
+    this.userService.getUsersByRoleId(2).subscribe(data => {
+      this.managers = data;
+    });
+    this.userService.getUsersByRoleId(3).subscribe(data => {
+      this.admins = data;
     });
     this.appService.getAppList().subscribe(data => {
       this.applications = data;

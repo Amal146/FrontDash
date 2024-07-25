@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Application } from '../../../model/application';
 import { ApplicationService } from '../../../service/application/application-service.service';
-import { NbDialogService } from '@nebular/theme';
-import { DialogNamePromptComponent } from '../../modal-overlays/dialog/dialog-name-prompt/dialog-name-prompt.component';
+import { PopoverFormComponent } from './popover-form.component';
 
 
 @Component({
@@ -13,12 +12,11 @@ import { DialogNamePromptComponent } from '../../modal-overlays/dialog/dialog-na
 export class AppListComponent implements OnInit {
   applications!: Application[];
   app: Application = new Application(); 
-
+  formComponent = PopoverFormComponent;
 
 
   constructor(
     private appService: ApplicationService,
-    private dialogService: NbDialogService
 
   ) {}
 
@@ -26,24 +24,10 @@ export class AppListComponent implements OnInit {
     console.log(localStorage.getItem('CurrentUser'))
     this.appService.getAppList().subscribe(data => {
       this.applications = data;
+      console.log(this.applications);
     });
   }
 
-  open3() {
-    this.dialogService.open(DialogNamePromptComponent)
-      .onClose.subscribe(name => {
-        if (name) { // Check if name is valid
-          this.app.name = name ;
-          this.appService.createApp( this.app ).subscribe({
-            next: () => {
-              window.location.reload(); // Refresh the page
-            },
-            error: (err) => {
-              console.error('Error creating app:', err);
-            }
-          });
-        }
-      });
-  }
+  
   
 }

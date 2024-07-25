@@ -1,22 +1,27 @@
-<div class="lists row">
-  <div class="col-md-12 col-lg-6 col-xxxl-6">
-    <nb-card class="list-card">
-      <nb-card-header>Our Applications</nb-card-header>
-      <nb-card-body>
-        <nb-list>
-          <nb-list-item *ngFor="let app of applications">
-            {{ app.name }}
-          </nb-list-item>
-        </nb-list>
-      </nb-card-body>
-    </nb-card>
-    <div class="col-md-12 col-lg-6 col-xxxl-6">
-      <nb-card class="form-input-card">
-        <nb-card-header>Add New Application</nb-card-header>
-        <nb-card-body class="result-from-dialog">
-          <button nbButton (click)="open3()">Enter Name</button>          
-        </nb-card-body>
-      </nb-card>
+<nb-layout>
+  <nb-layout-column>
+    <div class="lists row">
+      <div class="col-md-12 col-lg-6 col-xxxl-6">
+        <nb-card class="list-card">
+          <nb-card-header style="text-decoration: underline"
+            >Our Applications</nb-card-header
+          >
+          <nb-card-body>
+            <nb-list>
+              <nb-list-item *ngFor="let app of applications">
+                {{ app.name }}
+              </nb-list-item>
+            </nb-list>
+          </nb-card-body>
+        </nb-card>
+      </div>
     </div>
-  </div>
-</div>
+    <div>
+      <button nbButton nbPopoverPlacement="top" [nbPopover]="formComponent">
+        Add new Application
+      </button>
+    </div>
+
+    
+  </nb-layout-column>
+</nb-layout>
