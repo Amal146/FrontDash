@@ -57,7 +57,11 @@ if (currentUser?.includes("ROLE_ADMIN")) {
       icon: 'edit-2-outline',
       children: [
         {
-          title: 'Incident Form',
+          title: 'New Incident Form',
+          link: '/pages/forms/inputs',
+        },
+        {
+          title: 'Affect new Tasks ',
           link: '/pages/forms/inputs',
         },
         // {
@@ -223,7 +227,7 @@ if (currentUser?.includes("ROLE_ADMIN")) {
     }
   ];
   
-}else if(currentUser?.includes("ROLE_USER")) {
+}else if(currentUser?.includes("ROLE_MODERATOR")) {
   temp = [
 
     {
@@ -231,7 +235,37 @@ if (currentUser?.includes("ROLE_ADMIN")) {
       icon: 'home-outline',
       link: '/pages/dashboard',
       home: true,
-    }
+    },
+    {
+      title: 'App Manager',
+      icon: 'layout-outline',
+      children: [
+        {
+          title: 'Assigned Incident',
+          link: '/pages/tables/app-assigned-incidents',
+        },{
+          title: 'Solved Incidents',
+          link: '/pages/layout/app-list',
+        },
+      ],
+    },
+    {
+      title: 'Data Center',
+      icon: 'layout-outline',
+      children: [
+        {
+          title: 'Agents List',
+          link: '/pages/layout/list',
+        },{
+          title: 'Applications List',
+          link: '/pages/layout/app-list',
+        },
+        {
+          title: 'Smart Table',
+          link: '/pages/tables/smart-table',
+        }
+      ],
+    },
   ];
   
 }else {
@@ -244,33 +278,26 @@ if (currentUser?.includes("ROLE_ADMIN")) {
       home: true,
     },
     {
-      title: 'Data Center',
+      title: 'Report Incidents',
+      icon: 'edit-2-outline',
+      children: [
+        {
+          title: 'New Incident Form',
+          link: '/pages/forms/inputs',
+        }
+      ]
+      },
+    {
+      title: 'Task Manager',
       icon: 'layout-outline',
       children: [
-        // {
-        //   title: 'Stepper',
-        //   link: '/pages/layout/stepper',
-        // },
         {
-          title: 'Users List',
+          title: 'Assigned Incident',
           link: '/pages/layout/list',
         },{
-          title: 'Applications List',
+          title: 'Solved Incidents',
           link: '/pages/layout/app-list',
         },
-        // {
-        //   title: 'Infinite List',
-        //   link: '/pages/layout/infinite-list',
-        // },
-        // {
-        //   title: 'Accordion',
-        //   link: '/pages/layout/accordion',
-        // },
-        // {
-        //   title: 'Tabs',
-        //   pathMatch: 'prefix',
-        //   link: '/pages/layout/tabs',
-        // },
       ],
     },
   ];

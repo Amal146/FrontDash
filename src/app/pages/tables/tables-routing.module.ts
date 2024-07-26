@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { TablesComponent } from './tables.component';
 import { SmartTableComponent } from './smart-table/smart-table.component';
 import { TreeGridComponent } from './tree-grid/tree-grid.component';
+import { AppInciTableComponent } from './app-assigned-incidents-tab/app-inci-table.component';
 
 const routes: Routes = [{
   path: '',
@@ -16,6 +17,10 @@ const routes: Routes = [{
     {
       path: 'tree-grid',
       component: TreeGridComponent,
+    },
+    {
+      path: 'app-assigned-incidents',
+      component: AppInciTableComponent,
     },
   ],
 }];
@@ -30,4 +35,5 @@ export const routedComponents = [
   TablesComponent,
   SmartTableComponent,
   TreeGridComponent,
+  AppInciTableComponent,
 ];

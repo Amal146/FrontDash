@@ -24,6 +24,11 @@ export class ApplicationService {
     return this.httpClient.get<Application>(`${this.basUrl}/findAppById?id=${id}`);
   }
 
+  //GET Application by Id
+  getAppByManagerId(id: number): Observable<Application[]>{
+    return this.httpClient.get<Application[]>(`${this.basUrl}/findAppByManagerId?id=${id}`);
+  }
+
   //POST new application
   createApp(application: Application): Observable<Object> {
     return this.httpClient.post(`${this.basUrl}/saveApp`, application);

@@ -35,8 +35,8 @@ export class IncidentService {
   }
 
    //GET incident by AppId
-   getIncidentByAppId(application_id: number): Observable<Incident>{
-    return this.httpClient.get<Incident>(`${this.basUrl}/findIncidentByAppId?application_id=${application_id}`);
+   getIncidentsByAppId(application_id: number): Observable<Incident[]>{
+    return this.httpClient.get<Incident[]>(`${this.basUrl}/findIncidentByAppId?application_id=${application_id}`);
   }
 
    //GET Contributors by Incident Id
