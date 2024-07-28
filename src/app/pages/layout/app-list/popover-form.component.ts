@@ -2,8 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { ApplicationService } from "../../../service/application/application-service.service";
 import { UserService } from "../../../service/user/user-service.service";
 import { Application } from "../../../model/application";
-import { NbComponentStatus, NbToastrService } from "@nebular/theme";
-import { emitWarning } from "process";
+import { NbToastrService } from "@nebular/theme";
 
 @Component({
   selector: "ngx-popover-form",
@@ -35,7 +34,7 @@ import { emitWarning } from "process";
       </div>
       <button type="submit" class="btn btn-primary w-100">Send</button>
     </form>
-  </div>`,
+  </div>`
 })
 export class PopoverFormComponent implements OnInit {
     

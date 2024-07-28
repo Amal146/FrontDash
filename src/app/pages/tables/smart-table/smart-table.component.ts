@@ -49,6 +49,8 @@ export class SmartTableComponent implements OnInit {
   
 
   settings = {
+    hideSubHeader: true,
+    actions: false,
     add: {
       addButtonContent: '<i class="nb-plus"></i>',
       createButtonContent: '<i class="nb-checkmark"></i>',

@@ -7,10 +7,11 @@ import { ApplicationService } from "../../../service/application/application-ser
 
 @Component({
   selector: "ngx-smart-table",
-  templateUrl: "./app-inci-table.component.html",
-  styleUrls: ["./app-inci-table.component.scss"],
+  templateUrl: "./app-resolved-table.component.html",
+  styleUrls: ["./app-resolved-table.component.scss"],
 })
-export class AppInciTableComponent implements OnInit {
+
+export class AppResInciTableComponent implements OnInit {
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -49,7 +50,7 @@ export class AppInciTableComponent implements OnInit {
       this.incidentService
         .getIncidentsByAppId(appId)
        .subscribe((data) => {
-        const openIncidents = data.filter(incident => incident.status === 'Open');
+        const openIncidents = data.filter(incident => incident.status === 'Closed');
             this.incidents = [...this.incidents, ...openIncidents];
        });
    }
@@ -57,7 +58,7 @@ export class AppInciTableComponent implements OnInit {
 
   ngOnInit() {
     this.getApplicationList();
-
+    this.incidents = [];
     if (this.currentUser?.toString().includes("ROLE_MODERATOR")) {
       this.applicationService
         .getAppByManagerId(this.modId)
@@ -67,6 +68,8 @@ export class AppInciTableComponent implements OnInit {
           this.fillIncidents();
 
         });
+        console.log(this.incidents);
+
         return;
     }
 
@@ -87,14 +90,14 @@ export class AppInciTableComponent implements OnInit {
       cancelButtonContent: '<i class="nb-close"></i>',
     },
     edit: {
-      confirmSave: true,
+      confirmSave: false,
       editButtonContent: '<i class="nb-edit"></i>',
       saveButtonContent: '<i class="nb-checkmark"></i>',
       cancelButtonContent: '<i class="nb-close"></i>',
     },
     delete: {
       deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
+      confirmDelete: false,
     },
     columns: {
       id: {

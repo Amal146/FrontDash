@@ -5,6 +5,7 @@ const currentUser = localStorage.getItem('currentUser')?.toString();
 
 
 let temp = [];
+console.log(currentUser);
 if (currentUser?.includes("ROLE_ADMIN")) {
   temp = [
     {
@@ -26,10 +27,6 @@ if (currentUser?.includes("ROLE_ADMIN")) {
       title: 'Data Center',
       icon: 'layout-outline',
       children: [
-        // {
-        //   title: 'Stepper',
-        //   link: '/pages/layout/stepper',
-        // },
         {
           title: 'Agents List',
           link: '/pages/layout/list',
@@ -37,45 +34,24 @@ if (currentUser?.includes("ROLE_ADMIN")) {
           title: 'Applications List',
           link: '/pages/layout/app-list',
         },
-        // {
-        //   title: 'Infinite List',
-        //   link: '/pages/layout/infinite-list',
-        // },
-        // {
-        //   title: 'Accordion',
-        //   link: '/pages/layout/accordion',
-        // },
-        // {
-        //   title: 'Tabs',
-        //   pathMatch: 'prefix',
-        //   link: '/pages/layout/tabs',
-        // },
+        {
+          title: 'All incidents',
+          link: '/pages/tables/smart-table',
+        }
       ],
     },
     {
-      title: 'Assign Incidents',
+      title: 'Incidents Manager',
       icon: 'edit-2-outline',
       children: [
         {
-          title: 'New Incident Form',
+          title: 'Report new Incident',
           link: '/pages/forms/inputs',
         },
         {
-          title: 'Affect new Tasks ',
-          link: '/pages/forms/inputs',
-        },
-        // {
-        //   title: 'Forms layouts',
-        //   link: '/pages/forms/layouts',
-        // },
-        // {
-        //   title: 'Buttons',
-        //   link: '/pages/forms/buttons',
-        // },
-        // {
-        //   title: 'Datepicker',
-        //   link: '/pages/forms/datepicker',
-        // },
+          title: 'Assign new Tasks ',
+          link: '/pages/tables/open-incidents',
+        }
       ],
     },
     // {
@@ -238,34 +214,17 @@ if (currentUser?.includes("ROLE_ADMIN")) {
     },
     {
       title: 'App Manager',
-      icon: 'layout-outline',
+      icon: 'edit-2-outline',
       children: [
         {
           title: 'Assigned Incident',
           link: '/pages/tables/app-assigned-incidents',
         },{
           title: 'Solved Incidents',
-          link: '/pages/layout/app-list',
+          link: '/pages/tables/app-resolved-incidents',
         },
       ],
-    },
-    {
-      title: 'Data Center',
-      icon: 'layout-outline',
-      children: [
-        {
-          title: 'Agents List',
-          link: '/pages/layout/list',
-        },{
-          title: 'Applications List',
-          link: '/pages/layout/app-list',
-        },
-        {
-          title: 'Smart Table',
-          link: '/pages/tables/smart-table',
-        }
-      ],
-    },
+    }
   ];
   
 }else {

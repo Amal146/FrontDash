@@ -4,13 +4,14 @@ import { IncidentService } from "../../../service/incident/incident-service.serv
 import { User } from "../../../model/user";
 import { Application } from "../../../model/application";
 import { ApplicationService } from "../../../service/application/application-service.service";
+import { AssignPopoverFormComponent } from "./assign-form.component";
 
 @Component({
   selector: "ngx-smart-table",
-  templateUrl: "./app-inci-table.component.html",
-  styleUrls: ["./app-inci-table.component.scss"],
+  templateUrl: "./open-inci-table.component.html",
+  styleUrls: ["./open-inci-table.component.scss"],
 })
-export class AppInciTableComponent implements OnInit {
+export class OpenInciTableComponent implements OnInit {
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -24,6 +25,7 @@ export class AppInciTableComponent implements OnInit {
   // Define options for severity and status
   statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
   severityOptions = ["Low", "Medium", "High", "Critical"];
+  formComponent = AssignPopoverFormComponent;
 
   getApplicationList() {
     this.applicationService.getAppList().subscribe(
@@ -44,38 +46,19 @@ export class AppInciTableComponent implements OnInit {
       : [];
   }
 
-  fillIncidents(){
-    for ( var appId of this.appIds) {
-      this.incidentService
-        .getIncidentsByAppId(appId)
-       .subscribe((data) => {
-        const openIncidents = data.filter(incident => incident.status === 'Open');
-            this.incidents = [...this.incidents, ...openIncidents];
-       });
-   }
+  fillIncidents() {
+    this.incidentService.getIncidentList().subscribe((data) => {
+      const openIncidents = data.filter(
+        (incident) => incident.status === "Open"
+      );
+      this.incidents = [...this.incidents, ...openIncidents];
+    });
   }
 
   ngOnInit() {
     this.getApplicationList();
 
-    if (this.currentUser?.toString().includes("ROLE_MODERATOR")) {
-      this.applicationService
-        .getAppByManagerId(this.modId)
-        .subscribe((data) => {
-          this.appIds = data.map((app) => app.id);
-          console.log(this.appIds);
-          this.fillIncidents();
-
-        });
-        return;
-    }
-
-    this.incidentService
-    .getIncidentList()
-    .subscribe((data) => {
-      console.log(data);
-    });
-
+    this.fillIncidents();
   }
 
   settings = {

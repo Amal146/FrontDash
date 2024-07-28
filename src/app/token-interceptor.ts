@@ -2,7 +2,6 @@ import { HttpRequest , HttpHandler , HttpInterceptor , HttpEvent , HttpHeaders} 
 import {Observable } from 'rxjs';
 import { NbTokenService , NbAuthJWTToken} from '@nebular/auth';
 import {Injectable} from '@angular/core';
-import { User } from './model/user';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {

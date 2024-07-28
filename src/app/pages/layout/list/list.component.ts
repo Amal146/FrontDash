@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '../../../model/user';
 import { UserService } from '../../../service/user/user-service.service';
 import { Application } from '../../../model/application';
 import { ApplicationService } from '../../../service/application/application-service.service';
@@ -21,7 +20,6 @@ export class ListComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private appService: ApplicationService
-
   ) {}
 
   ngOnInit(): void {
