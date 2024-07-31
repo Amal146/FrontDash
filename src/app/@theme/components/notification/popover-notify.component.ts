@@ -6,58 +6,79 @@ import { Notification } from "../../../model/notification";
   selector: "ngx-popover-form",
   template: `
     <div class="notifications">
+      <label class="notifications-label">Notifications</label>
       <div class="notify" *ngFor="let notification of notifications">
         <p>{{ notification.message }}</p>
-        <button nbButton status="info" (click)="markAsRead(notification.id)">Mark as read</button>
+        <button nbButton status="primary" (click)="markAsRead(notification.id)">
+          Mark as read
+        </button>
       </div>
+      <p *ngIf="!notifications?.length">No notifications right now.</p>
     </div>
   `,
-  styles: [`
-    .notifications {
-      position: absolute;
-      right: 0;
-      top: 50px;
-      background: #25DF6A;
-      border: 1px solid #2451D0;
-      padding: 10px;
-      width: 300px;
-    }
-    .notify {
-      border-bottom: 1px solid #2451D0;
-      padding: 10px 0;
-    }
-    .notify:last-child {
-      border-bottom: none; /* Remove border from the last notification */
-    }
-  `]
+  styles: [
+    `
+      .notifications {
+        position: absolute;
+        color: white;
+        right: 0;
+        top: 50px;
+        background: #29157a;
+        border: 1px solid #2451d0;
+        padding: 10px;
+        width: 300px;
+      }
+      .notifications-label {
+        font-size: 24px;
+        position: absolute;
+        top: -20px;
+        left: 10px;
+        background: #29157a;
+        font-weight: bold;
+      }
+      .notify p {
+        color: white;
+      }
+      .notify {
+        border-bottom: 1px solid #2451d0;
+        padding: 10px 0;
+      }
+      .notify:last-child {
+        border-bottom: none; /* Remove border from the last notification */
+      }
+    `,
+  ],
 })
 export class PopoverNotifyComponent implements OnInit {
-  constructor(
-    private notificationService: NotificationService,
-  ) {}
+  constructor(private notificationService: NotificationService) {}
 
   notifications: Notification[] = [];
   currentUser = localStorage.getItem("currentUser");
 
   ngOnInit(): void {
-    const userId = this.currentUser ? JSON.parse(this.currentUser)["id"] : null ; // Replace with dynamic user ID
-    this.notificationService.getUnreadNotifications(userId).subscribe(notifications => {
-      this.notifications = notifications;
-      console.log('Notifications:', this.notifications);
-    });
+    const userId = this.currentUser ? JSON.parse(this.currentUser)["id"] : null; // Replace with dynamic user ID
+    this.notificationService
+      .getUnreadNotifications(userId)
+      .subscribe((notifications) => {
+        this.notifications = notifications;
+        console.log("Notifications:", this.notifications);
+      });
   }
 
   markAsRead(id: number) {
     if (id !== undefined && id !== null) {
-      this.notificationService.markAsRead(id).subscribe(() => {
-        console.log(`Notification ${id} marked as read`);
-        // Optionally, remove the notification from the list
-        this.notifications = this.notifications.filter(n => n.id !== id);
-      }, error => {
-        console.error('Error marking notification as read', error);
-      });
+      this.notificationService.markAsRead(id).subscribe(
+        () => {
+          console.log(`Notification ${id} marked as read`);
+          // Optionally, remove the notification from the list
+          this.notifications = this.notifications.filter((n) => n.id !== id);
+        },
+        (error) => {
+          console.error("Error marking notification as read", error);
+        }
+      );
     } else {
-      console.error('Invalid notification ID', id);
+      console.error("Invalid notification ID", id);
     }
   }
 }

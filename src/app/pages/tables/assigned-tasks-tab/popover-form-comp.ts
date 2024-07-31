@@ -3,6 +3,7 @@ import { ApplicationService } from "../../../service/application/application-ser
 import { UserService } from "../../../service/user/user-service.service";
 import { NbToastrService } from "@nebular/theme";
 import { IncidentService } from "../../../service/incident/incident-service.service";
+import { NotificationService } from "../../../service/notification/notification.service";
 
 @Component({
   selector: "ngx-popover-form",
@@ -27,6 +28,15 @@ export class FinishTaskPopoverFormComponent implements OnInit {
   rowData = JSON.parse(localStorage.getItem("currentIncident"));
   solution = "";
 
+  notification = {
+    message: "",
+    is_read: false,
+    user : {
+      id : 0 ,
+    },
+    timestamp: new Date()
+  };
+
   updatedTask = {
     id: "",
     title: "",
@@ -48,6 +58,8 @@ export class FinishTaskPopoverFormComponent implements OnInit {
   };
 
   constructor(
+    private userService: UserService,
+    private notificationService: NotificationService,
     private applicationService: ApplicationService,
     private incidentService: IncidentService,
     private toastrService: NbToastrService
@@ -85,8 +97,52 @@ export class FinishTaskPopoverFormComponent implements OnInit {
     this.incidentService.updateIncident(this.rowData.id , this.updatedTask).subscribe(
       () => {
         console.log('updated succefully !! ')
-        window.location.reload(); 
+        this.sendAdminsNotifications();
+        this.notifyManager();
+
+        setTimeout(() => {
+          window.location.reload(); 
+        }, 5000); 
       }
     )
+
   }
+  resolver = '' ;
+  sendAdminsNotifications() {
+    
+
+    this.userService.getUsersByRoleId(3).subscribe(users => {
+      this.userService.getUserById(this.updatedTask.resolvedBy.id).subscribe((res) => {
+        this.resolver = res.username;
+        users.forEach(user => {
+          this.notification.message =  "Dear Admin Incident titled " + this.updatedTask.title + "has been resolved by " + this.resolver ;
+          this.notification.is_read =  false;
+          this.notification.user.id =  user.id;
+          this.notification.timestamp =  new Date();
+          this.notificationService.save(this.notification).subscribe();
+        
+         });
+     });
+       
+    });
+ }
+
+ notifyManager(){
+  let x = '' ;
+  this.userService.getUserById(this.updatedTask.resolvedBy.id).subscribe((res) => {
+    x = res.username;
+  }
+)
+  this.applicationService.getAppById(this.updatedTask.application.id).subscribe(
+    (data) => {
+      
+     
+      this.notification.user.id = data.managerId;
+      this.notification.message =  "Dear Manager Incident titled " + this.updatedTask.title + "has been resolved by " + x ;
+      this.notification.is_read =  false;
+      this.notification.timestamp =  new Date();
+      this.notificationService.save(this.notification).subscribe();
+      })
+     }
+
 }

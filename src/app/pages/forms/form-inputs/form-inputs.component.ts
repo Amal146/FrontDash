@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Incident } from '../../../model/incident';
 import { Application } from '../../../model/application';
-import { ActivatedRoute, Router } from '@angular/router';
 import { IncidentService } from '../../../service/incident/incident-service.service';
 import { ApplicationService } from '../../../service/application/application-service.service';
 import { UserService } from '../../../service/user/user-service.service';
@@ -49,7 +48,6 @@ export class FormInputsComponent implements OnInit{
   constructor(
     private notificationService :  NotificationService,
     private toastrService : NbToastrService,
-    private router: Router,
     private incidentService: IncidentService,
     private applicationService: ApplicationService,
     private userService: UserService
