@@ -13,6 +13,7 @@ import {
   NbSelectModule,
   NbIconModule,
   NbThemeModule,
+  NbPopoverModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -39,9 +40,11 @@ import { DEFAULT_THEME } from './styles/theme.default';
 import { COSMIC_THEME } from './styles/theme.cosmic';
 import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
+import { PopoverNotifyComponent } from './components/notification/popover-notify.component';
 
 const NB_MODULES = [
   NbLayoutModule,
+  NbPopoverModule,
   NbMenuModule,
   NbUserModule,
   NbActionsModule,
@@ -55,6 +58,7 @@ const NB_MODULES = [
   NbEvaIconsModule,
 ];
 const COMPONENTS = [
+  PopoverNotifyComponent,
   HeaderComponent,
   FooterComponent,
   SearchInputComponent,
@@ -74,7 +78,7 @@ const PIPES = [
 @NgModule({
   imports: [CommonModule, ...NB_MODULES],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
-  declarations: [...COMPONENTS, ...PIPES],
+  declarations: [...COMPONENTS, ...PIPES,],
 })
 export class ThemeModule {
   static forRoot(): ModuleWithProviders<ThemeModule> {

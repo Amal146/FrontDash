@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { NbRegisterComponent } from '@nebular/auth';
 import { NbAuthService, NB_AUTH_OPTIONS } from '@nebular/auth';
 import { User } from '../../model/user'; 
+import { ToastrComponent } from '../../pages/modal-overlays/toastr/toastr.component';
+import { NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-register',
@@ -18,11 +20,16 @@ export class NgxRegisterComponent extends NbRegisterComponent {
     service: NbAuthService,
     @Inject(NB_AUTH_OPTIONS) options: {},
     cd: ChangeDetectorRef,
-    router: Router
+    router: Router,
+    private toastrService :NbToastrService
   ) {
     super(service, options, cd, router);
   }
-
+  showSuccess() {
+    this.toastrService.show("Authenticated successfully !", "Success", {
+      status: "success",
+    });
+  }
   register(): void {
     this.errors = [];
     this.messages = [];
@@ -34,6 +41,7 @@ export class NgxRegisterComponent extends NbRegisterComponent {
 
         if (result.isSuccess()) {
           this.messages = result.getMessages();
+          this.showSuccess();
           console.log("Registration successful!");
           setTimeout(() => {
             this.router.navigate(['/auth/login']); 
@@ -43,6 +51,7 @@ export class NgxRegisterComponent extends NbRegisterComponent {
           this.errors = result.getErrors();
           console.log("Registration failed!" , this.errors.toString());
           if (this.errors.toString() === "Token is empty or invalid."){
+            this.showSuccess();
             this.router.navigate(['/auth/login']);
           }
         }

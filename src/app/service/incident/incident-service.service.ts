@@ -20,13 +20,18 @@ export class IncidentService {
   }
 
    //POST new incident
-  createIncident(incident: Incident): Observable<Object> {
+  createIncident(incident: Object): Observable<Object> {
     return this.httpClient.post(`${this.basUrl}/saveIncident`, incident);
   }
 
    //GET incident by Id
   getIncidentById(id: number): Observable<Incident>{
     return this.httpClient.get<Incident>(`${this.basUrl}/findIcidentById?id=${id}`);
+  }
+  
+  //GET incidents by resolver Id
+  getIncidentByResolverId(id: number): Observable<Incident[]>{
+    return this.httpClient.get<Incident[]>(`${this.basUrl}/findIcidentByIdResolver?resolverId=${id}`);
   }
 
    //GET incident by title
@@ -45,8 +50,8 @@ export class IncidentService {
   }
 
   //UPDATE incident
-  updateIncident(id:number, incident:Incident): Observable<Object>{
-    return this.httpClient.put(`${this.basUrl}/updateIncident/${id}`, incident);
+  updateIncident(id:number, Object): Observable<Object>{
+    return this.httpClient.put(`${this.basUrl}/updateIncident/${id}`, Object);
   }
 
   //DELETE incident

@@ -5,8 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IncidentService } from '../../../service/incident/incident-service.service';
 import { ApplicationService } from '../../../service/application/application-service.service';
 import { UserService } from '../../../service/user/user-service.service';
-import { ToastrComponent } from '../../modal-overlays/toastr/toastr.component';
 import { NbToastrService } from '@nebular/theme';
+import { NotificationService } from '../../../service/notification/notification.service';
 
 @Component({
   selector: 'ngx-form-inputs',
@@ -21,13 +21,34 @@ export class FormInputsComponent implements OnInit{
   resolvedByEmail: string = '';
   appId = 0;
 
-  starRate = 2;
-  heartRate = 4;
-  radioGroupValue = 'This is value 2';
+  notification = {
+    message: "",
+    is_read: false,
+    user : {
+      id : 0 ,
+    },
+    timestamp: new Date()
+  };
+
+
+  incidentReport = {
+    title: "",
+    description: "",
+    severity: "",
+    status:"",
+    reportedAt : new Date(),
+    application:{
+       id : 0
+    },
+    reportedBy:{
+       id : 0
+    }
+  
+  }
   
   constructor(
+    private notificationService :  NotificationService,
     private toastrService : NbToastrService,
-    private route: ActivatedRoute,
     private router: Router,
     private incidentService: IncidentService,
     private applicationService: ApplicationService,
@@ -36,6 +57,7 @@ export class FormInputsComponent implements OnInit{
 
   ngOnInit() {
     this.loadApplications();
+    
   }
 
   loadApplications() {
@@ -57,48 +79,52 @@ export class FormInputsComponent implements OnInit{
     );
   }
   onSubmit() {
-    console.log(this.appId);
-    this.applicationService.getAppById(this.appId).subscribe({
-      next: res => {
-        this.incident.application = res; // Assign the fetched user to reportedBy
-      },
-      error: err => {
-        console.error('Error fetching user:', err);
-        alert('Invalid application');
+    
+    this.incidentReport.reportedAt = new Date();
+    this.incidentReport.status = 'Open';
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.incidentReport.reportedBy.id = currentUser.id;    
+    this.incidentService.createIncident(this.incidentReport).subscribe(
+      () => {
+        
+        this.sendAdminsNotifications();
+        this.showSuccess();
       }
-    });
-
-    this.userService.getUserByEmail(this.reportedByEmail).subscribe({
-      next: res => {
-        this.incident.reportedBy = res; // Assign the fetched user to reportedBy
-      },
-      error: err => {
-        console.error('Error fetching user:', err);
-        alert('Invalid reporter email address');
-      }
-    });
-    if (this.resolvedByEmail != '')
-    {this.userService.getUserByEmail(this.resolvedByEmail).subscribe({
-      next: res => {
-        this.incident.resolvedBy = res; // Assign the fetched user to reportedBy
-      },
-      error: err => {
-        console.error('Error fetching user:', err);
-        alert('Invalid resolver email address');
-      }
-    });}
-    this.incident.reportedAt = new Date();
-    this.incident.status = 'Open';
-    console.log(this.incident); // Log the incident with the assigned user
-    this.showSuccess();
-    this.incidentService.createIncident(this.incident).subscribe(result => this.gotoIncidentList());
+    );
 
   }
 
-  
-  
+  reporter = '' ;
 
-  gotoIncidentList() {
-    this.router.navigate(['/pages/tables/smart-table']);
+  sendAdminsNotifications() {
+     this.userService.getUserById(this.incidentReport.reportedBy.id).subscribe((res) => {
+      this.reporter = res.username;
+     })
+
+     this.userService.getUsersByRoleId(3).subscribe(users => {
+      users.forEach(user => {
+        this.notification.message =  "A new incident has been reported by " + this.reporter ;
+        this.notification.is_read =  false;
+        this.notification.user.id =  user.id;
+        this.notification.timestamp =  new Date();
+        this.notificationService.save(this.notification).subscribe();
+      });
+     });
+    
+    
+      this.applicationService.getAppById(this.incidentReport.application.id).subscribe(
+        (res) => {
+          console.log(res);
+          this.notification.user.id = res.managerId;
+          this.notification.message =  "A new incident has been reported by " + this.reporter ;
+          this.notification.is_read =  false;
+          this.notification.timestamp =  new Date();
+          console.log(this.notification.user.id);
+          this.notificationService.save(this.notification).subscribe();
+        }
+      )
+      
   }
+
+  
 }

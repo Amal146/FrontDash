@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import {  Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import {
   NbMediaBreakpointsService,
   NbMenuService,
@@ -10,6 +10,8 @@ import { LayoutService } from "../../../@core/utils";
 import { map, takeUntil } from "rxjs/operators";
 import { Subject } from "rxjs";
 import {  NbAuthService } from "@nebular/auth";
+import { NotificationService } from "../../../service/notification/notification.service";
+import { PopoverNotifyComponent } from "../notification/popover-notify.component";
 
 @Component({
   selector: "ngx-header",
@@ -18,6 +20,8 @@ import {  NbAuthService } from "@nebular/auth";
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   user:{} ;
+  showNotifications = false;
+  unreadCount = 0;
 
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
@@ -25,6 +29,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentTheme = "cosmic";
 
   userMenu = [{ title: "Log out", link: 'auth/logout' }];
+  currentUser = localStorage.getItem("currentUser");
+  notifyComponent = PopoverNotifyComponent;
 
   themes = [
     { value: "default", name: "Light" },
@@ -34,6 +40,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
+    private notificationService: NotificationService,
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
@@ -41,8 +48,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private breakpointService: NbMediaBreakpointsService,
     private authService: NbAuthService
   ) { }
-
+  
+  @ViewChild('notificationsInbox') notificationsInbox: ElementRef;
   ngOnInit() {
+    const userId = this.currentUser ? JSON.parse(this.currentUser)["id"] : null ; // Replace with dynamic user ID
+    this.notificationService.getUnreadNotifications(userId).subscribe(notifications => {
+      this.unreadCount = notifications.length;
+    });
+
     this.currentTheme = this.themeService.currentTheme;
 
     const { xl } = this.breakpointService.getBreakpointsMap();
@@ -72,6 +85,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleNotifications(): void {
+    this.showNotifications = !this.showNotifications;
+  }
+  
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();

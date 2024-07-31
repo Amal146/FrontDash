@@ -157,7 +157,7 @@ export const NB_CORE_PROVIDERS = [
           failure: true,
         },
         redirect: {
-          success: "/",
+          success: "/pages/dashboard",
           failure: null,
         },
       },

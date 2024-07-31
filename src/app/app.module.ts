@@ -5,7 +5,7 @@
  */
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgModule } from "@angular/core";
+import {  NgModule } from "@angular/core";
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { CoreModule } from "./@core/core.module";
 import { TokenInterceptor } from "./token-interceptor";
@@ -13,6 +13,7 @@ import { ThemeModule } from "./@theme/theme.module";
 import { AppComponent } from "./app.component";
 import { AuthGuard } from "./auth.guard";
 import { AppRoutingModule } from "./app-routing.module";
+
 
 import {
   NbSelectModule,
@@ -26,10 +27,15 @@ import {
   NbLayoutModule,
 } from "@nebular/theme";
 import { APP_BASE_HREF } from "@angular/common";
+import { SuprSendInboxModule } from "@suprsend/ngx-inbox";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    SuprSendInboxModule.forRoot({
+      workspaceKey: "jPjMN6YEpoeWyrBN7ZkH",
+      workspaceSecret: "SS.WSS.R7a8PQvq5xaGZ5XUqfAAcxUUI4VkPIGxd18tUIPb",
+    }),
     NbLayoutModule,
     NbSelectModule,
     BrowserModule,

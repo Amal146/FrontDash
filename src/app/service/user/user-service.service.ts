@@ -49,8 +49,8 @@ existsByUserIdAndRoleId(userId: number, roleId: number): Observable<Boolean> {
 }
 
 // GET Users by role id 
-getUsersByRoleId(roleId: number) : Observable<Object> {
-  return this.httpClient.get(`${this.basUrl}/UsersByRoleId?roleId=${roleId}`);
+getUsersByRoleId(roleId: number) : Observable<User[]> {
+  return this.httpClient.get<User[]>(`${this.basUrl}/UsersByRoleId?roleId=${roleId}`);
 } 
 
 

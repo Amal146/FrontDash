@@ -8,6 +8,9 @@ import { AppInciTableComponent } from './app-assigned-incidents-tab/app-inci-tab
 import { AppResInciTableComponent } from './app-resolved-incidents-tab/app-resolved-table.component';
 import { OpenInciTableComponent } from './open-incidents-tab/open-inci-table.component';
 import { AssignPopoverFormComponent } from './open-incidents-tab/assign-form.component';
+import { AssignedTasksTabComponent } from './assigned-tasks-tab/assigned-tasks-tab.component';
+import { SolvedTasksTabComponent } from './solved-tasks-tab/solved-tasks-tab.component';
+import { FinishTaskPopoverFormComponent } from './assigned-tasks-tab/popover-form-comp';
 
 const routes: Routes = [{
   path: '',
@@ -33,6 +36,14 @@ const routes: Routes = [{
       path: 'open-incidents',
       component: OpenInciTableComponent,
     },
+    {
+      path: 'assigned-tasks',
+      component: AssignedTasksTabComponent,
+    },
+    {
+      path: 'solved-tasks',
+      component: SolvedTasksTabComponent,
+    },
   ],
 }];
 
@@ -43,6 +54,8 @@ const routes: Routes = [{
 export class TablesRoutingModule { }
 
 export const routedComponents = [
+  SolvedTasksTabComponent,
+  AssignedTasksTabComponent,
   AssignPopoverFormComponent,
   OpenInciTableComponent,
   AppResInciTableComponent,

@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
 import { Incident } from "../../../model/incident";
 import { IncidentService } from "../../../service/incident/incident-service.service";
 import { User } from "../../../model/user";
 import { Application } from "../../../model/application";
 import { ApplicationService } from "../../../service/application/application-service.service";
-import { AssignPopoverFormComponent } from "./assign-form.component";
+import { Component, OnInit } from "@angular/core";
+import { MyCustomComponent } from "./custom-component";
 
 @Component({
-  selector: "ngx-smart-table",
-  templateUrl: "./open-inci-table.component.html",
-  styleUrls: ["./open-inci-table.component.scss"],
+  selector: "ngx-assigned-tasks-tab",
+  templateUrl: "./assigned-tasks-tab.component.html",
+  styleUrls: ["./assigned-tasks-tab.component.scss"],
 })
-export class OpenInciTableComponent implements OnInit {
+export class AssignedTasksTabComponent implements OnInit {
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -25,7 +25,6 @@ export class OpenInciTableComponent implements OnInit {
   // Define options for severity and status
   statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
   severityOptions = ["Low", "Medium", "High", "Critical"];
-  formComponent = AssignPopoverFormComponent;
 
   getApplicationList() {
     this.applicationService.getAppList().subscribe(
@@ -47,12 +46,19 @@ export class OpenInciTableComponent implements OnInit {
   }
 
   fillIncidents() {
-    this.incidentService.getIncidentList().subscribe((data) => {
-      const openIncidents = data.filter(
-        (incident) => incident.status === "Open" && incident.resolvedBy === null 
-      );
-      this.incidents = [...this.incidents, ...openIncidents];
-    });
+    this.incidentService
+      .getIncidentByResolverId(this.modId)
+      .subscribe((data) => {
+        const openIncidents = data.filter(
+          (incident) => incident.status !== "Resolved"
+        );
+        this.incidents = [...this.incidents, ...openIncidents];
+      });
+  }
+
+  onCustomAction(event: any) {
+    // Handle custom action events
+    console.log('Custom action triggered:', event);
   }
 
   ngOnInit() {
@@ -64,22 +70,15 @@ export class OpenInciTableComponent implements OnInit {
   settings = {
     hideSubHeader: true,
     actions: false,
-    add: {
-      addButtonContent: '<i class="nb-plus"></i>',
-      createButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    edit: {
-      confirmSave: true,
-      editButtonContent: '<i class="nb-edit"></i>',
-      saveButtonContent: '<i class="nb-checkmark"></i>',
-      cancelButtonContent: '<i class="nb-close"></i>',
-    },
-    delete: {
-      deleteButtonContent: '<i class="nb-trash"></i>',
-      confirmDelete: true,
-    },
     columns: {
+      customColumn: {
+        title: "Actions",
+        type: "custom",
+        filter: false,
+        renderComponent: MyCustomComponent,
+        onComponentInitFunction(instance: MyCustomComponent) {
+        },
+      },
       id: {
         title: "ID",
         type: "number",
@@ -129,11 +128,6 @@ export class OpenInciTableComponent implements OnInit {
         type: "string",
         valuePrepareFunction: (user: User) => (user ? `${user.email}` : "N/A"),
       },
-      resolvedBy: {
-        title: "Assigned to",
-        type: "string",
-        valuePrepareFunction: (user: User) => (user ? `${user.email} ` : "N/A"),
-      },
       application: {
         title: "Application",
         type: "string",
@@ -147,6 +141,4 @@ export class OpenInciTableComponent implements OnInit {
       },
     },
   };
-
- 
 }
