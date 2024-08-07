@@ -3,6 +3,8 @@ import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { LayoutService } from '../../../../@core/utils';
 import { OutlineData } from '../../../../@core/data/visitors-analytics';
+import { Incident } from '../../../../model/incident';
+import { IncidentService } from '../../../../service/incident/incident-service.service';
 
 @Component({
   selector: 'ngx-visitors-analytics-chart',
@@ -30,6 +32,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
   echartsIntance: any;
 
   constructor(private theme: NbThemeService,
+              private incidentService: IncidentService,
               private layoutService: LayoutService) {
     this.layoutService.onSafeChangeLayoutSize()
       .pipe(
@@ -39,6 +42,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
   }
 
   ngAfterViewInit(): void {
+    this.getIncidentPerMonth();
     this.theme.getJsTheme()
       .pipe(
         delay(1),
@@ -49,6 +53,35 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
 
         this.setOptions(eTheme);
     });
+  }
+
+  resolvedPerMonth : Number[] =[];
+  reportedPerMonth: Number[] = [];
+  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  getIncidentPerMonth(){
+    this.incidentService.getIncidentList().subscribe(
+      (res) => {
+        for (let month = 0; month < 12; month++) {
+          const incidentsInMonth = res.filter(incident => {
+            const reportedAtDate = new Date(incident.reportedAt);
+            return reportedAtDate.getMonth() == month;
+          }).length;
+          this.reportedPerMonth.push(incidentsInMonth);
+        }
+        console.log(this.reportedPerMonth);  
+
+         const resolutionInMonth = res.filter(incident => incident.status === "Resolved");
+         for (let month = 0; month < 12; month++) {
+           const incidentsInMonth = resolutionInMonth.filter(incident => {
+             const resolvedAtDate = new Date(incident.reportedAt);
+               return resolvedAtDate.getMonth() == month;
+          }).length;
+           this.resolvedPerMonth.push(incidentsInMonth);
+       }
+       console.log(this.resolvedPerMonth); 
+      })
+      console.log(this.chartData.innerLine);
   }
 
   setOptions(eTheme) {
@@ -86,7 +119,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
         type: 'category',
         boundaryGap: false,
         offset: 25,
-        data: this.chartData.outerLine.map(i => i.label),
+        data: this.months.map(i => i),
         axisTick: {
           show: false,
         },
@@ -175,7 +208,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
           }]),
         },
       },
-      data: this.chartData.outerLine.map(i => i.value),
+      data: this.resolvedPerMonth,
     };
   }
 
@@ -215,7 +248,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
           opacity: 1,
         },
       },
-      data: this.chartData.innerLine,
+      data: this.reportedPerMonth,
     };
   }
 

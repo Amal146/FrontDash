@@ -1,20 +1,21 @@
-import { ExtraOptions, RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { AuthGuard } from './auth.guard';
+import { ExtraOptions, RouterModule, Routes } from "@angular/router";
+import { NgModule } from "@angular/core";
+import { AuthGuard } from "./auth.guard";
 
 export const routes: Routes = [
   {
-    path: 'pages',
-    canActivate: [AuthGuard] ,
-    loadChildren: () => import('./pages/pages.module')
-      .then(m => m.PagesModule),
+    path: "pages",
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import("./pages/pages.module").then((m) => m.PagesModule),
   },
   {
-    path: 'auth',
-    loadChildren: () => import('./auth/auth.module').then(m => m.NgxAuthModule),
+    path: "auth",
+    loadChildren: () =>
+      import("./auth/auth.module").then((m) => m.NgxAuthModule),
   },
-  { path: '', redirectTo: 'pages', pathMatch: 'full' },
-  { path: '**', redirectTo: 'pages' },
+  { path: "", redirectTo: "pages", pathMatch: "full" },
+  { path: "**", redirectTo: "pages" },
 ];
 
 const config: ExtraOptions = {
@@ -22,8 +23,12 @@ const config: ExtraOptions = {
 };
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, config)],
+  imports: [
+    RouterModule.forRoot(
+      routes,
+      config
+    ),
+  ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule {}

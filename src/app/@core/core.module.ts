@@ -6,9 +6,7 @@ import {
 } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import {
-  NbAuthJWTToken,
   NbAuthModule,
-  NbPasswordAuthStrategyOptions,
   NbPasswordAuthStrategy,
 } from "@nebular/auth";
 import { NbSecurityModule, NbRoleProvider } from "@nebular/security";
@@ -58,13 +56,10 @@ import { SolarService } from "./mock/solar.service";
 import { TrafficChartService } from "./mock/traffic-chart.service";
 import { StatsBarService } from "./mock/stats-bar.service";
 import { CountryOrderService } from "./mock/country-order.service";
-import {HttpResponse} from '@angular/common/http';
 import { StatsProgressBarService } from "./mock/stats-progress-bar.service";
 import { VisitorsAnalyticsService } from "./mock/visitors-analytics.service";
 import { SecurityCamerasService } from "./mock/security-cameras.service";
 import { MockDataModule } from "./mock/mock-data.module";
-import { Console } from "console";
-import { start } from "repl";
 
 const socialLinks = [
   {
@@ -130,7 +125,7 @@ export const NB_CORE_PROVIDERS = [
               return null;
             }
             let token = res.body.accessToken;
-            let user : {} = res.body;
+            let user : {} = res.body; 
             localStorage.setItem('currentUser', JSON.stringify(user));
             return token;
           },
@@ -157,7 +152,7 @@ export const NB_CORE_PROVIDERS = [
           failure: true,
         },
         redirect: {
-          success: "/pages/welcome",
+          success: "/refresh",
           failure: null,
         },
       },

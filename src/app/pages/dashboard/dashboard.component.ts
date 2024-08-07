@@ -85,12 +85,14 @@ export class DashboardComponent implements OnDestroy {
       .subscribe(theme => {
         this.statusCards = this.statusCardsByThemes[theme.name];
     });
-
+     
     this.solarService.getSolarData()
       .pipe(takeWhile(() => this.alive))
       .subscribe((data) => {
         this.solarValue = data;
       });
+
+    
   }
 
   ngOnDestroy() {

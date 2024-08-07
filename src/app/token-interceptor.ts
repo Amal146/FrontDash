@@ -1,6 +1,6 @@
 import { HttpRequest , HttpHandler , HttpInterceptor , HttpEvent , HttpHeaders} from '@angular/common/http';
 import {Observable } from 'rxjs';
-import { NbTokenService , NbAuthJWTToken} from '@nebular/auth';
+import { NbTokenService } from '@nebular/auth';
 import {Injectable} from '@angular/core';
 
 @Injectable()

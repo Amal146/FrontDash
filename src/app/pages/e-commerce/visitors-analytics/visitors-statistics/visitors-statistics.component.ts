@@ -1,16 +1,18 @@
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
-import { NbThemeService } from '@nebular/theme';
-import { delay, takeWhile } from 'rxjs/operators';
-import { LayoutService } from '../../../../@core/utils/layout.service';
-
+import { AfterViewInit, Component, Input, OnDestroy } from "@angular/core";
+import { NbThemeService } from "@nebular/theme";
+import { delay, takeWhile } from "rxjs/operators";
+import { LayoutService } from "../../../../@core/utils/layout.service";
+import { IncidentService } from "../../../../service/incident/incident-service.service";
+import { Incident } from "../../../../model/incident";
 
 @Component({
-  selector: 'ngx-visitors-statistics',
-  styleUrls: ['./visitors-statistics.component.scss'],
-  templateUrl: './visitors-statistics.component.html',
+  selector: "ngx-visitors-statistics",
+  styleUrls: ["./visitors-statistics.component.scss"],
+  templateUrl: "./visitors-statistics.component.html",
 })
-export class ECommerceVisitorsStatisticsComponent implements AfterViewInit, OnDestroy {
-
+export class ECommerceVisitorsStatisticsComponent
+  implements AfterViewInit, OnDestroy
+{
   private alive = true;
 
   @Input() value: number;
@@ -18,40 +20,67 @@ export class ECommerceVisitorsStatisticsComponent implements AfterViewInit, OnDe
   option: any = {};
   chartLegend: { iconColor: string; title: string }[];
   echartsIntance: any;
+  incidents: Incident[];
+  totalInci = "";
+  resolvedInci: Incident[];
+  pendingInci: Incident[];
+  resolvedPercent = 0;
+  pendingPercent = 0;
 
-  constructor(private theme: NbThemeService,
-              private layoutService: LayoutService) {
-    this.layoutService.onSafeChangeLayoutSize()
-      .pipe(
-        takeWhile(() => this.alive),
-      )
+  constructor(
+    private incidentsService: IncidentService,
+    private theme: NbThemeService,
+    private layoutService: LayoutService
+  ) {
+    this.getIncidentsList();
+    this.layoutService
+      .onSafeChangeLayoutSize()
+      .pipe(takeWhile(() => this.alive))
       .subscribe(() => this.resizeChart());
   }
 
+  getIncidentsList() {
+    this.incidentsService.getIncidentList().subscribe((res) => {
+      this.incidents = res;
+      this.totalInci = res.length.toString();
+      this.resolvedInci = res.filter(
+        (incident) => incident.status === "Resolved"
+      );
+      this.resolvedPercent = (this.resolvedInci.length / res.length) * 100;
+      console.log(this.resolvedPercent);
+      this.pendingInci = res.filter(
+        (incident) => incident.status !== "Resolved"
+      );
+      this.pendingPercent = (this.pendingInci.length / res.length) * 100;
+      console.log(this.pendingPercent);
+    });
+  }
+
   ngAfterViewInit() {
-    this.theme.getJsTheme()
+    this.theme
+      .getJsTheme()
       .pipe(
         takeWhile(() => this.alive),
-        delay(1),
+        delay(1)
       )
-      .subscribe(config => {
+      .subscribe((config) => {
         const variables: any = config.variables;
         const visitorsPieLegend: any = config.variables.visitorsPieLegend;
 
         this.setOptions(variables);
         this.setLegendItems(visitorsPieLegend);
-    });
+      });
   }
 
   setLegendItems(visitorsPieLegend) {
     this.chartLegend = [
       {
         iconColor: visitorsPieLegend.firstSection,
-        title: 'New Visitors',
+        title: "Resolved",
       },
       {
         iconColor: visitorsPieLegend.secondSection,
-        title: 'Return Visitors',
+        title: "On Progress",
       },
     ];
   }
@@ -59,31 +88,34 @@ export class ECommerceVisitorsStatisticsComponent implements AfterViewInit, OnDe
   setOptions(variables) {
     const visitorsPie: any = variables.visitorsPie;
 
+    console.log("Resolved Percent:", this.resolvedPercent);
+    console.log("Pending Percent:", this.pendingPercent);
+
     this.option = {
       tooltip: {
-        trigger: 'item',
-        formatter: '',
+        trigger: "item",
+        formatter: "",
       },
       series: [
         {
-          name: ' ',
+          name: " ",
           clockWise: true,
           hoverAnimation: false,
-          type: 'pie',
-          center: ['50%', '50%'],
+          type: "pie",
+          center: ["50%", "50%"],
           radius: visitorsPie.firstPieRadius,
           data: [
             {
-              value: this.value,
-              name: ' ',
+              value: 100,
+              name: " ",
               label: {
                 normal: {
-                  position: 'center',
-                  formatter: '',
+                  position: "center",
+                  formatter: "",
                   textStyle: {
-                    fontSize: '22',
+                    fontSize: "22",
                     fontFamily: variables.fontSecondary,
-                    fontWeight: '600',
+                    fontWeight: "600",
                     color: variables.fgHeading,
                   },
                 },
@@ -112,14 +144,14 @@ export class ECommerceVisitorsStatisticsComponent implements AfterViewInit, OnDe
               hoverAnimation: false,
             },
             {
-              value: 100 - this.value,
-              name: ' ',
+              value: 0,
+              name: " ",
               tooltip: {
                 show: false,
               },
               label: {
                 normal: {
-                  position: 'inner',
+                  position: "inner",
                 },
               },
               itemStyle: {
@@ -131,24 +163,24 @@ export class ECommerceVisitorsStatisticsComponent implements AfterViewInit, OnDe
           ],
         },
         {
-          name: ' ',
+          name: " ",
           clockWise: true,
           hoverAnimation: false,
-          type: 'pie',
-          center: ['50%', '50%'],
+          type: "pie",
+          center: ["50%", "50%"],
           radius: visitorsPie.secondPieRadius,
           data: [
             {
-              value: this.value,
-              name: ' ',
+              value: 100 - Math.round(this.resolvedPercent),
+              name: " ",
               label: {
                 normal: {
-                  position: 'center',
-                  formatter: '',
+                  position: "center",
+                  formatter: "",
                   textStyle: {
-                    fontSize: '22',
+                    fontSize: "22",
                     fontFamily: variables.fontSecondary,
-                    fontWeight: '600',
+                    fontWeight: "600",
                     color: variables.fgHeading,
                   },
                 },
@@ -164,14 +196,14 @@ export class ECommerceVisitorsStatisticsComponent implements AfterViewInit, OnDe
               hoverAnimation: false,
             },
             {
-              value: 100 - this.value,
-              name: ' ',
+              value: Math.round(this.resolvedPercent),
+              name: " ",
               tooltip: {
                 show: false,
               },
               label: {
                 normal: {
-                  position: 'inner',
+                  position: "inner",
                 },
               },
               itemStyle: {

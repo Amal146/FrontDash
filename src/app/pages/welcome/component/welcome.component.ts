@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NbMenuService } from '@nebular/theme';
+import { NbMenuItem, NbMenuService } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-welcome',
@@ -7,11 +7,14 @@ import { NbMenuService } from '@nebular/theme';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent implements OnInit {
-  constructor(private menuService: NbMenuService) {
-  }
+  constructor(private menuService: NbMenuService) { }
+
+  currentUser = localStorage.getItem('currentUser')?.toString();
   ngOnInit(): void {
+    
     setTimeout(() => {
-        this.menuService.navigateHome();
-    }, 1000); 
+      this.menuService.navigateHome();
+    }, 2000);
   }
+
 }

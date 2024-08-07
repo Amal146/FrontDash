@@ -27,15 +27,10 @@ import {
   NbLayoutModule,
 } from "@nebular/theme";
 import { APP_BASE_HREF } from "@angular/common";
-import { SuprSendInboxModule } from "@suprsend/ngx-inbox";
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    SuprSendInboxModule.forRoot({
-      workspaceKey: "jPjMN6YEpoeWyrBN7ZkH",
-      workspaceSecret: "SS.WSS.R7a8PQvq5xaGZ5XUqfAAcxUUI4VkPIGxd18tUIPb",
-    }),
     NbLayoutModule,
     NbSelectModule,
     BrowserModule,
@@ -62,7 +57,7 @@ import { SuprSendInboxModule } from "@suprsend/ngx-inbox";
       useClass: TokenInterceptor,
       multi: true,
   },
-  AuthGuard
+  AuthGuard,
   ],
 })
 export class AppModule {}
