@@ -12,6 +12,7 @@ import { ApplicationService } from "../../../service/application/application-ser
 })
 
 export class AppResInciTableComponent implements OnInit {
+  loading = true;
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -78,6 +79,10 @@ export class AppResInciTableComponent implements OnInit {
     .subscribe((data) => {
       console.log(data);
     });
+
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
 
   }
 
@@ -166,7 +171,7 @@ export class AppResInciTableComponent implements OnInit {
         valuePrepareFunction: (description: string) => description || "N/A",
       },
       application: {
-        title: "Application",
+        title: "Project",
         type: "string",
         valuePrepareFunction: (application: Application) => application.name,
         editor: {

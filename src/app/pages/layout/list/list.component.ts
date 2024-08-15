@@ -14,7 +14,7 @@ export class ListComponent implements OnInit {
   managers!: {};
   admins!: {};
   applications!: Application[];
-
+  loading = true;
 
   constructor(
     private router: Router,
@@ -23,8 +23,10 @@ export class ListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     this.userService.getUsersByRoleId(1).subscribe(data => {
       this.users = data;
+
     });
     this.userService.getUsersByRoleId(2).subscribe(data => {
       this.managers = data;
@@ -35,5 +37,9 @@ export class ListComponent implements OnInit {
     this.appService.getAppList().subscribe(data => {
       this.applications = data;
     });
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
+
   }
 }

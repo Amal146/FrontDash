@@ -1,13 +1,11 @@
 <div class="row">
   <div class="col-lg-6">
-    <nb-card style="display: flex;">
-      
-        <nb-card-header>Add Incident</nb-card-header>
-        <nb-card-body>
-          <!-- Title Field -->
-          <form (ngSubmit)="onSubmit()" #incidentForm="ngForm">
+    <nb-card style="display: flex">
+      <nb-card-header>Add Incident</nb-card-header>
+      <nb-card-body>
+        <!-- Title Field -->
+        <form (ngSubmit)="onSubmit()" #incidentForm="ngForm">
           <div class="form-group">
-            
             <label for="title" class="col-sm-3 label">Title</label>
             <input
               nbInput
@@ -55,7 +53,7 @@
               Description is required
             </div>
           </div>
-          
+
           <!-- Severity Field -->
           <div class="form-group row">
             <label class="col-sm-3 label">Severity</label>
@@ -78,20 +76,20 @@
           <div class="form-group row">
             <label class="col-sm-3 label">Application</label>
             <div class="col-sm-9">
-              <nb-radio-group
+              <nb-select
                 [(ngModel)]="incidentReport.application.id"
                 name="application"
                 required
                 #applicationId="ngModel"
+                placeholder="Select a project"
               >
-                <nb-radio *ngFor="let app of applications" [value]="app.id">
+                <nb-option *ngFor="let app of applications" [value]="app.id">
                   {{ app.name }}
-                </nb-radio>
-              </nb-radio-group>
+                </nb-option>
+              </nb-select>
             </div>
           </div>
 
-          
           <button
             type="submit"
             [disabled]="!incidentForm.form.valid"
@@ -100,9 +98,7 @@
             Submit
           </button>
         </form>
-        </nb-card-body>
-      
+      </nb-card-body>
     </nb-card>
-
-    
-</div> 
+  </div>
+</div>

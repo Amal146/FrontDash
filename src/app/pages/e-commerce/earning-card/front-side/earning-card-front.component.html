@@ -1,23 +1,24 @@
-<nb-card-header>
-  <nb-select [selected]="selectedCurrency" (selectedChange)="changeCurrency($event)">
-    <nb-option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</nb-option>
-  </nb-select>
+<nb-card-header style="display: flex; justify-content: space-between; align-items: center;" >
+  <span>Projects Analysis</span>
+  <nb-select style="margin-right: 20px;" *ngIf="apps.length > 0" [selected]="selectedApp" [compareWith]="compareFn" (selectedChange)="changeApp($event)">
+    <nb-option *ngFor="let app of apps" [value]="app">{{ app.name }}</nb-option>
+</nb-select>
 </nb-card-header>
-<nb-card-body>
+
+
+<nb-card-body *ngIf="incidentLiveUpdateCardData">
   <div class="chart-info">
-    <div>Daily Income</div>
-    <div class="h6">{{ earningLiveUpdateCardData.dailyIncome | ngxNumberWithCommas }}</div>
+    <div>Total Incident</div>
+    <div class="h6">{{ incidentLiveUpdateCardData?.dailyIncome | ngxNumberWithCommas }}</div>
     <div class="delta"
-         [class.up]="earningLiveUpdateCardData.delta.up"
-         [class.down]="!earningLiveUpdateCardData.delta.up">
-      <nb-icon [icon]="earningLiveUpdateCardData.delta.up ? 'arrow-up' : 'arrow-down'"
+         [class.up]="incidentLiveUpdateCardData?.delta?.up"
+         [class.down]="!incidentLiveUpdateCardData?.delta?.up">
+      <nb-icon [icon]="incidentLiveUpdateCardData?.delta?.up ? 'arrow-up' : 'arrow-down'"
                pack="eva"
                class="direction">
       </nb-icon>
-      {{ earningLiveUpdateCardData.delta.value }}%
+      {{ incidentLiveUpdateCardData?.delta?.value }}%
     </div>
   </div>
-  <ngx-earning-live-update-chart
-    [liveUpdateChartData]="liveUpdateChartData">
-  </ngx-earning-live-update-chart>
+  <ngx-earning-live-update-chart [linesData]="incidentLiveUpdateCardData?.liveChart"></ngx-earning-live-update-chart>
 </nb-card-body>

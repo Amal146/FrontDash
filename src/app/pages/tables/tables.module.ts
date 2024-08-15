@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NbButtonModule, NbCardModule, NbIconModule, NbInputModule, NbLayoutModule, NbPopoverModule, NbSelectModule, NbTreeGridModule } from '@nebular/theme';
+import { NbButtonModule, NbCardModule, NbIconModule, NbInputModule, NbLayoutModule, NbPopoverModule, NbSelectModule, NbSpinnerModule, NbTreeGridModule } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
 import { TablesRoutingModule, routedComponents } from './tables-routing.module';
@@ -16,6 +16,7 @@ import { FinishTaskPopoverFormComponent } from './assigned-tasks-tab/popover-for
 
 @NgModule({
   imports: [
+    NbSpinnerModule,
     NbButtonModule,
     NbLayoutModule,
     NbSelectModule,

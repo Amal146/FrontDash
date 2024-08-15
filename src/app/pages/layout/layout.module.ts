@@ -8,6 +8,7 @@ import {
   NbPopoverModule,
   NbRouteTabsetModule,
   NbSelectModule,
+  NbSpinnerModule,
   NbStepperModule,
   NbTabsetModule, NbUserModule,
 } from '@nebular/theme';
@@ -32,6 +33,7 @@ import { ModalOverlaysModule } from '../modal-overlays/modal-overlays.module';
 
 @NgModule({
   imports: [
+    NbSpinnerModule,
     ModalOverlaysModule,
     NbThemeModule.forRoot(),
     ModalOverlaysRoutingModule,

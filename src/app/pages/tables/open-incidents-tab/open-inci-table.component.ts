@@ -12,6 +12,7 @@ import { AssignPopoverFormComponent } from "./assign-form.component";
   styleUrls: ["./open-inci-table.component.scss"],
 })
 export class OpenInciTableComponent implements OnInit {
+  loading= true;
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -59,6 +60,9 @@ export class OpenInciTableComponent implements OnInit {
     this.getApplicationList();
 
     this.fillIncidents();
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
   }
 
   settings = {
@@ -135,7 +139,7 @@ export class OpenInciTableComponent implements OnInit {
         valuePrepareFunction: (user: User) => (user ? `${user.email} ` : "N/A"),
       },
       application: {
-        title: "Application",
+        title: "Project",
         type: "string",
         valuePrepareFunction: (application: Application) => application.name,
         editor: {

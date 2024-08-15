@@ -4,6 +4,7 @@ import { takeWhile } from 'rxjs/operators';
 
 import { ProfitChart } from '../../../../@core/data/profit-chart';
 import { LayoutService } from '../../../../@core/utils/layout.service';
+import { IncidentService } from '../../../../service/incident/incident-service.service';
 
 @Component({
   selector: 'ngx-profit-chart',
@@ -23,6 +24,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
   options: any = {};
 
   constructor(private theme: NbThemeService,
+               private incidentService: IncidentService,
               private layoutService: LayoutService) {
     this.layoutService.onSafeChangeLayoutSize()
       .pipe(
@@ -42,10 +44,43 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
       .pipe(takeWhile(() => this.alive))
       .subscribe(config => {
         const eTheme: any = config.variables.profit;
-
+        this.fetchAndUpdateChartData();
         this.setOptions(eTheme);
+        this.updateProfitChartOptions(this.profitChartData);
+        console.log(this.profitChartData);
       });
   }
+
+  fetchAndUpdateChartData() {
+    const chartLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let BugsData : number[] = [];
+    let FailureData : number[] = [];
+    let OtherData : number[] = [];
+
+    this.incidentService.getIncidentList().subscribe((res) => {
+      for (let month = 0; month < 12; month++) {
+        const incidents = res.filter((incident) => { 
+          const reportedAtDate = new Date(incident.reportedAt);
+          return reportedAtDate.getMonth() === month;
+        });
+        BugsData.push(incidents.filter((incident) => incident.solutionDescription === 'Optimize performance and check resource usage.' || incident.solutionDescription === 'Review code for bugs and apply fixes.').length)
+        FailureData.push(incidents.filter(incident => incident.solutionDescription === 'Verify configurations and retry.' || incident.solutionDescription === 'Restart the application and check settings.' || incident.solutionDescription === 'Check error logs and stack trace.').length);
+        OtherData.push(incidents.filter(incident =>  incident.solutionDescription === 'Investigate the issue thoroughly.'  ).length);
+      }
+
+      const linesData = [OtherData, FailureData, BugsData];
+      
+      this.profitChartData = {
+        chartLabel: chartLabels,
+        data: linesData
+      };
+  
+      this.updateProfitChartOptions(this.profitChartData);
+    });
+  }
+  
+  
+
 
   setOptions(eTheme) {
     this.options = {
@@ -104,7 +139,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
       ],
       series: [
         {
-          name: 'Canceled',
+          name: 'Bugs',
           type: 'bar',
           barGap: 0,
           barWidth: '20%',
@@ -122,7 +157,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
           data: this.profitChartData.data[0],
         },
         {
-          name: 'Payment',
+          name: 'Failure',
           type: 'bar',
           barWidth: '20%',
           itemStyle: {
@@ -139,7 +174,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
           data: this.profitChartData.data[1],
         },
         {
-          name: 'All orders',
+          name: 'Other',
           type: 'bar',
           barWidth: '20%',
           itemStyle: {

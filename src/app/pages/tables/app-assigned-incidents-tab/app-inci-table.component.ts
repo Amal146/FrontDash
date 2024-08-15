@@ -24,6 +24,8 @@ export class AppInciTableComponent implements OnInit {
   // Define options for severity and status
   statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
   severityOptions = ["Low", "Medium", "High", "Critical"];
+  loading = true;
+
 
   getApplicationList() {
     this.applicationService.getAppList().subscribe(
@@ -75,6 +77,11 @@ export class AppInciTableComponent implements OnInit {
     .subscribe((data) => {
       console.log(data);
     });
+    
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
+    
 
   }
 

@@ -4,6 +4,7 @@ import { delay, takeWhile } from 'rxjs/operators';
 
 import { OrdersChart } from '../../../../@core/data/orders-chart';
 import { LayoutService } from '../../../../@core/utils/layout.service';
+import { IncidentService } from '../../../../service/incident/incident-service.service';
 
 @Component({
   selector: 'ngx-orders-chart',
@@ -34,6 +35,7 @@ export class OrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges
   }
 
   constructor(private theme: NbThemeService,
+              private incidentService: IncidentService,
               private layoutService: LayoutService) {
     this.layoutService.onSafeChangeLayoutSize()
       .pipe(
@@ -50,11 +52,41 @@ export class OrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges
       )
       .subscribe(config => {
         const eTheme: any = config.variables.orders;
-
+        this.fetchAndUpdateChartData();
         this.setOptions(eTheme);
         this.updateOrdersChartOptions(this.ordersChartData);
       });
   }
+
+  fetchAndUpdateChartData() {
+    const chartLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let highSeverityData : number[] = [];
+    let mediumSeverityData : number[] = [];
+    let lowSeverityData : number[] = [];
+
+    this.incidentService.getIncidentList().subscribe((res) => {
+      for (let month = 0; month < 12; month++) {
+        const incidents = res.filter((incident) => { 
+          const reportedAtDate = new Date(incident.reportedAt);
+          return reportedAtDate.getMonth() === month;
+        });
+        highSeverityData.push(incidents.filter((incident) => incident.severity === 'Critical' || incident.severity === 'High').length)
+        mediumSeverityData.push(incidents.filter(incident => incident.severity === 'Medium').length);
+        lowSeverityData.push(incidents.filter(incident => incident.severity === 'Low').length);
+      }
+
+      const linesData = [lowSeverityData, mediumSeverityData,highSeverityData ];
+      
+      this.ordersChartData = {
+        chartLabel: chartLabels,
+        linesData: linesData, 
+      };
+  
+      this.updateOrdersChartOptions(this.ordersChartData);
+    });
+  }
+  
+  
 
   setOptions(eTheme) {
     this.option = {

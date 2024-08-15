@@ -2,24 +2,27 @@ import { delay, takeWhile } from 'rxjs/operators';
 import { AfterViewInit, Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { LayoutService } from '../../../../@core/utils/layout.service';
+import { ApplicationService } from '../../../../service/application/application-service.service';
+import { IncidentService } from '../../../../service/incident/incident-service.service';
 
 @Component({
   selector: 'ngx-earning-live-update-chart',
   styleUrls: ['earning-card-front.component.scss'],
   template: `
     <div echarts
+         [options]="options"
          class="echart"
-         [options]="option"
-         (chartInit)="onChartInit($event)"></div>
+         (chartInit)="onChartInit($event)">
+    </div>
   `,
 })
-export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy, OnChanges {
+export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy {
   private alive = true;
 
-  @Input() liveUpdateChartData: { value: [string, number] }[];
+  @Input() linesData: number[] = [];
 
-  option: any;
-  echartsInstance;
+  echartsInstance: any;
+  options: any = {};
 
   constructor(private theme: NbThemeService,
               private layoutService: LayoutService) {
@@ -30,126 +33,74 @@ export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy
       .subscribe(() => this.resizeChart());
   }
 
-  ngOnChanges(): void {
-    if (this.option) {
-      this.updateChartOptions(this.liveUpdateChartData);
-    }
-  }
-
   ngAfterViewInit() {
     this.theme.getJsTheme()
-      .pipe(
-        delay(1),
-        takeWhile(() => this.alive),
-      )
+      .pipe(takeWhile(() => this.alive))
       .subscribe(config => {
-        const earningLineTheme: any = config.variables.earningLine;
+        const profitBarAnimationEchart: any = config.variables.profitBarAnimationEchart;
 
-        this.setChartOption(earningLineTheme);
-      });
+        this.setChartOption(profitBarAnimationEchart);
+    });
   }
 
-  setChartOption(earningLineTheme) {
-    this.option = {
+  setChartOption(chartVariables) {
+    this.options = {
+      color: [chartVariables.firstAnimationBarColor],
       grid: {
         left: 0,
         top: 0,
         right: 0,
         bottom: 0,
       },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'line',
+        },
+      },
       xAxis: {
-        type: 'time',
-        axisLine: {
-          show: false,
-        },
+        type: 'category',
+        name: 'Days of the Year 2013',
+        data: Array.from({ length: 365 }, (_, index) => this.formatDate(index + 1)), 
         axisLabel: {
-          show: false,
-        },
-        axisTick: {
-          show: false,
-        },
-        splitLine: {
-          show: false,
+          rotate: 45, 
+          interval: 30, 
         },
       },
       yAxis: {
-        boundaryGap: [0, '5%'],
-        axisLine: {
-          show: false,
-        },
-        axisLabel: {
-          show: false,
-        },
-        axisTick: {
-          show: false,
-        },
-        splitLine: {
-          show: false,
-        },
-      },
-      tooltip: {
-        axisPointer: {
-          type: 'shadow',
-        },
-        textStyle: {
-          color: earningLineTheme.tooltipTextColor,
-          fontWeight: earningLineTheme.tooltipFontWeight,
-          fontSize: earningLineTheme.tooltipFontSize,
-        },
-        position: 'top',
-        backgroundColor: earningLineTheme.tooltipBg,
-        borderColor: earningLineTheme.tooltipBorderColor,
-        borderWidth: earningLineTheme.tooltipBorderWidth,
-        formatter: params => `$ ${Math.round(parseInt(params.value[1], 10))}`,
-        extraCssText: earningLineTheme.tooltipExtraCss,
+        type: 'value',
+        name: 'Number of Incidents', // Label for the Y-axis
       },
       series: [
         {
+          name: 'Incidents',
           type: 'line',
-          symbol: 'circle',
-          sampling: 'average',
-          itemStyle: {
-            normal: {
-              opacity: 0,
-            },
-            emphasis: {
-              opacity: 0,
-            },
-          },
+          smooth: true,
+          data: this.linesData,
           lineStyle: {
-            normal: {
-              width: 0,
-            },
+            color: '#3366ff', 
           },
-          areaStyle: {
-            normal: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                offset: 0,
-                color: earningLineTheme.gradFrom,
-              }, {
-                offset: 1,
-                color: earningLineTheme.gradTo,
-              }]),
-              opacity: 1,
-            },
-          },
-          data: this.liveUpdateChartData,
         },
       ],
-      animation: true,
     };
+    if (this.echartsInstance) {
+      this.echartsInstance.setOption(this.options, true);
+    }
   }
 
-  updateChartOptions(chartData: { value: [string, number] }[]) {
-    this.echartsInstance.setOption({
-      series: [{
-        data: chartData,
-      }],
-    });
+  ngOnChanges() {
+    if (this.linesData && this.linesData.length > 0) {
+      this.setChartOption(this.theme);
+    }
   }
-
-  onChartInit(ec) {
-    this.echartsInstance = ec;
+  private formatDate(dayOfYear: number): string {
+    const date = new Date(Date.now()); // Create a date object with the current year
+    date.setMonth(0, dayOfYear); // Set the month to January and the day to the given day of the year
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+  
+  onChartInit(echarts) {
+    this.echartsInstance = echarts;
   }
 
   resizeChart() {
@@ -158,7 +109,7 @@ export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.alive = false;
   }
 }

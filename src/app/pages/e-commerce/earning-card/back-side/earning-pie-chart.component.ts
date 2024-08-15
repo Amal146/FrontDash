@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { delay, takeWhile } from 'rxjs/operators';
 
@@ -14,35 +14,46 @@ import { delay, takeWhile } from 'rxjs/operators';
     </div>
   `,
 })
-export class EarningPieChartComponent implements AfterViewInit, OnDestroy {
+export class EarningPieChartComponent implements AfterViewInit, OnDestroy, OnChanges {
 
-  @Output() selectPie = new EventEmitter<{value: number; name: string; color: string}>();
-  @Input() values: {value: number; name: string; }[];
-  @Input() defaultSelectedCurrency: string;
+  @Output() selectPie = new EventEmitter<{ value: number; name: string; color: string }>();
+  @Input() values: { value: number; name: string; }[] = [];
+  @Input() defaultSelectedApp: string = '';
 
   private alive = true;
 
   options: any = {};
   echartsInstance;
 
-  constructor(private theme: NbThemeService) {
+  constructor(private theme: NbThemeService, private cdr: ChangeDetectorRef) {}
+  
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.values || changes.defaultSelectedApp) {
+      if (this.echartsInstance) {
+        this.updateChart();
+        this.selectDefaultPie();
+      }
+    }
   }
+  
 
   onChartInit(ec) {
     this.echartsInstance = ec;
+    this.updateChart();
+    this.cdr.detectChanges();
   }
 
   onChartClick(event) {
     const pieData = {
       value: event.value,
       name: event.name,
-      color: event.color.colorStops[0].color,
+      color: event.color,
     };
 
     this.emitSelectPie(pieData);
   }
 
-  emitSelectPie(pieData: {value: number; name: string; color: any}) {
+  emitSelectPie(pieData: { value: number; name: string; color: any }) {
     this.selectPie.emit(pieData);
   }
 
@@ -54,47 +65,83 @@ export class EarningPieChartComponent implements AfterViewInit, OnDestroy {
       )
       .subscribe(config => {
         const variables = config.variables;
-
         this.options = this.getOptions(variables);
-        const defaultSelectedData =
-          this.options.series[0].data.find((item) => item.name === this.defaultSelectedCurrency);
-        const color = defaultSelectedData.itemStyle.normal.color.colorStops[0].color;
-        const pieData = {
-          value: defaultSelectedData.value,
-          name: defaultSelectedData.name,
-          color,
-        };
-
-        this.emitSelectPie(pieData);
+        this.cdr.detectChanges();
+        this.updateChart();
+        this.selectDefaultPie();
       });
+  }
+
+  updateChart() {
+    if (this.echartsInstance && this.options) {
+      this.echartsInstance.setOption(this.options, true);
+    }
+  }
+
+  selectDefaultPie() {
+    const defaultSelectedData =
+      this.options.series[0].data.find((item) => item.name === this.defaultSelectedApp);
+
+    if (defaultSelectedData) {
+      const color = defaultSelectedData.itemStyle.normal.color;
+      const pieData = {
+        value: defaultSelectedData.value,
+        name: defaultSelectedData.name,
+        color,
+      };
+
+      this.emitSelectPie(pieData);
+    } else {
+      console.warn('Default selected app not found in the pie chart data.');
+      if (this.options.series[0].data.length > 0) {
+        const fallbackData = this.options.series[0].data[0];
+        const fallbackColor = fallbackData.itemStyle.normal.color;
+        const fallbackPieData = {
+          value: fallbackData.value,
+          name: fallbackData.name,
+          color: fallbackColor,
+        };
+        this.emitSelectPie(fallbackPieData);
+      }
+    }
   }
 
   getOptions(variables) {
     const earningPie: any = variables.earningPie;
 
+    if (!earningPie) {
+      console.error('earningPie is not defined');
+      return {};
+    }
+
+    const colors = ['#00d68f', '#ffaa00', '#ff3d71', '#3366ff', '#6610f2'];
+
     return {
       tooltip: {
         trigger: 'item',
-        formatter: '',
+        formatter: '{b}',
       },
       series: [
         {
           name: ' ',
-          clockWise: true,
-          hoverAnimation: false,
+          clockwise: true,
+          hoverAnimation: true,
           type: 'pie',
-          center: earningPie.center,
-          radius: earningPie.radius,
-          data: [
-            {
-              value: this.values[0].value,
-              name: this.values[0].name,
+          center:  ['50%', '50%'],
+          radius:  ['50%','70%'],
+          data: this.values.map((item, index) => {
+            const randomIndex = Math.floor(Math.random() * colors.length);
+            const color = colors[randomIndex];
+            return {
+              value: item.value,
+              name: item.name,
               label: {
                 normal: {
                   position: 'center',
-                  formatter: '',
+                  formatter: ``,
                   textStyle: {
-                    fontSize: '22',
+                    fontSize: '30pt',
+                    lineHeight: '3pt',
                     fontFamily: variables.fontSecondary,
                     fontWeight: '600',
                     color: variables.fgHeading,
@@ -102,102 +149,19 @@ export class EarningPieChartComponent implements AfterViewInit, OnDestroy {
                 },
               },
               tooltip: {
-                show: false,
+                show: true,
               },
               itemStyle: {
                 normal: {
-                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    {
-                      offset: 0,
-                      color: earningPie.firstPieGradientLeft,
-                    },
-                    {
-                      offset: 1,
-                      color: earningPie.firstPieGradientRight,
-                    },
-                  ]),
-                  shadowColor: earningPie.firstPieShadowColor,
-                  shadowBlur: 0,
+                  color: color,
+                  shadowColor: 0,
+                  shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowOffsetY: 3,
+                  shadowOffsetY: 0,
                 },
               },
-            },
-            {
-              value: this.values[1].value,
-              name: this.values[1].name,
-              label: {
-                normal: {
-                  position: 'center',
-                  formatter: '',
-                  textStyle: {
-                    fontSize: '22',
-                    fontFamily: variables.fontSecondary,
-                    fontWeight: '600',
-                    color: variables.fgHeading,
-                  },
-                },
-              },
-              tooltip: {
-                show: false,
-              },
-              itemStyle: {
-                normal: {
-                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    {
-                      offset: 0,
-                      color: earningPie.secondPieGradientLeft,
-                    },
-                    {
-                      offset: 1,
-                      color: earningPie.secondPieGradientRight,
-                    },
-                  ]),
-                  shadowColor: earningPie.secondPieShadowColor,
-                  shadowBlur: 0,
-                  shadowOffsetX: 0,
-                  shadowOffsetY: 3,
-                },
-              },
-            },
-            {
-              value: this.values[2].value,
-              name: this.values[2].name,
-              label: {
-                normal: {
-                  position: 'center',
-                  formatter: '',
-                  textStyle: {
-                    fontSize: '22',
-                    fontFamily: variables.fontSecondary,
-                    fontWeight: '600',
-                    color: variables.fgHeading,
-                  },
-                },
-              },
-              tooltip: {
-                show: false,
-              },
-              itemStyle: {
-                normal: {
-                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                    {
-                      offset: 0,
-                      color: earningPie.thirdPieGradientLeft,
-                    },
-                    {
-                      offset: 1,
-                      color: earningPie.thirdPieGradientRight,
-                    },
-                  ]),
-                  shadowColor: earningPie.thirdPieShadowColor,
-                  shadowBlur: 0,
-                  shadowOffsetX: 0,
-                  shadowOffsetY: 3,
-                },
-              },
-            },
-          ],
+            };
+          }),
         },
       ],
     };

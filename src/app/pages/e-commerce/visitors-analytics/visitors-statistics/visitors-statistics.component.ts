@@ -55,38 +55,20 @@ export class ECommerceVisitorsStatisticsComponent
       console.log(this.pendingPercent);
     });
   }
-
-  ngAfterViewInit() {
-    this.theme
-      .getJsTheme()
-      .pipe(
-        takeWhile(() => this.alive),
-        delay(1)
-      )
-      .subscribe((config) => {
-        const variables: any = config.variables;
-        const visitorsPieLegend: any = config.variables.visitorsPieLegend;
-
-        this.setOptions(variables);
-        this.setLegendItems(visitorsPieLegend);
-      });
-  }
-
-  setLegendItems(visitorsPieLegend) {
-    this.chartLegend = [
-      {
-        iconColor: visitorsPieLegend.firstSection,
-        title: "Resolved",
-      },
-      {
-        iconColor: visitorsPieLegend.secondSection,
-        title: "On Progress",
-      },
-    ];
-  }
-
+  
   setOptions(variables) {
-    const visitorsPie: any = variables.visitorsPie;
+    this.incidentsService.getIncidentList().subscribe((res) => {
+      this.incidents = res;
+      this.totalInci = res.length.toString();
+      this.resolvedInci = res.filter(
+        (incident) => incident.status === "Resolved"
+      );
+      this.resolvedPercent = (this.resolvedInci.length / res.length) * 100;
+      this.pendingInci = res.filter(
+        (incident) => incident.status !== "Resolved"
+      );
+      this.pendingPercent = (this.pendingInci.length / res.length) * 100;
+      const visitorsPie: any = variables.visitorsPie;
 
     console.log("Resolved Percent:", this.resolvedPercent);
     console.log("Pending Percent:", this.pendingPercent);
@@ -229,7 +211,40 @@ export class ECommerceVisitorsStatisticsComponent
         },
       ],
     };
+
+    });
   }
+
+  ngAfterViewInit() {
+    this.theme
+      .getJsTheme()
+      .pipe(
+        takeWhile(() => this.alive),
+        delay(1)
+      )
+      .subscribe((config) => {
+        const variables: any = config.variables;
+        const visitorsPieLegend: any = config.variables.visitorsPieLegend;
+        this.getIncidentsList();
+        this.setOptions(variables);
+        this.setLegendItems(visitorsPieLegend);
+      });
+  }
+
+  setLegendItems(visitorsPieLegend) {
+    this.chartLegend = [
+      {
+        iconColor: visitorsPieLegend.firstSection,
+        title: "Resolved",
+      },
+      {
+        iconColor: visitorsPieLegend.secondSection,
+        title: "On Progress / Open",
+      },
+    ];
+  }
+
+   
 
   onChartInit(echarts) {
     this.echartsIntance = echarts;

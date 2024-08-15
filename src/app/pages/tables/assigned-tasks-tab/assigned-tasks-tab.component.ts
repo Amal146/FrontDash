@@ -12,6 +12,7 @@ import { MyCustomComponent } from "./custom-component";
   styleUrls: ["./assigned-tasks-tab.component.scss"],
 })
 export class AssignedTasksTabComponent implements OnInit {
+  loading= true;
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -65,6 +66,9 @@ export class AssignedTasksTabComponent implements OnInit {
     this.getApplicationList();
 
     this.fillIncidents();
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
   }
 
   settings = {
@@ -129,7 +133,7 @@ export class AssignedTasksTabComponent implements OnInit {
         valuePrepareFunction: (user: User) => (user ? `${user.email}` : "N/A"),
       },
       application: {
-        title: "Application",
+        title: "Project",
         type: "string",
         valuePrepareFunction: (application: Application) => application.name,
         editor: {

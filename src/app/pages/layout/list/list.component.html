@@ -1,7 +1,8 @@
 <div class="lists row">
   <div class="col-md-12 col-lg-6 col-xxxl-6">
-    <nb-card class="list-card" size="small">
+    <nb-card class="list-card" size="small" [nbSpinner]="loading" nbSpinnerStatus="primary">
       <nb-card-header>Developers & Testers</nb-card-header>
+      
       <nb-list>
         <nb-list-item *ngFor="let user of users">
           <nb-user [name]="user.username" [title]="user.email"></nb-user>
@@ -10,7 +11,7 @@
     </nb-card>
   </div>
   <div class="col-md-12 col-lg-6 col-xxxl-6">
-    <nb-card class="list-card" size="small">
+    <nb-card class="list-card" size="small" [nbSpinner]="loading" nbSpinnerStatus="primary">
       <nb-card-header>Managers</nb-card-header>
       <nb-list>
         <nb-list-item *ngFor="let user of managers">
@@ -20,7 +21,7 @@
     </nb-card>
   </div>
   <div class="col-md-12 col-lg-6 col-xxxl-6">
-    <nb-card class="list-card" size="small">
+    <nb-card class="list-card" size="small" [nbSpinner]="loading" nbSpinnerStatus="primary">
       <nb-card-header>Admins</nb-card-header>
       <nb-list>
         <nb-list-item *ngFor="let user of admins">

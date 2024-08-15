@@ -11,6 +11,7 @@ import { ApplicationService } from "../../../service/application/application-ser
   styleUrls: ["./smart-table.component.scss"],
 })
 export class SmartTableComponent implements OnInit {
+  loading= true;
   constructor(
     private incidentService: IncidentService,    
     private applicationService: ApplicationService,
@@ -45,6 +46,9 @@ export class SmartTableComponent implements OnInit {
     this.incidentService.getIncidentList().subscribe((data) => {
       this.incidents = data;
     });
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
   }
   
 
@@ -128,7 +132,7 @@ export class SmartTableComponent implements OnInit {
         valuePrepareFunction: (description: string) => description || "N/A",
       },
       application: {
-        title: "Application",
+        title: "Project",
         type: "string",
         valuePrepareFunction: (application: Application) => application.name,
          editor: {

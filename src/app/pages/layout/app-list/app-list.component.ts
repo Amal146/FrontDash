@@ -13,6 +13,7 @@ export class AppListComponent implements OnInit {
   applications!: Application[];
   app: Application = new Application(); 
   formComponent = PopoverFormComponent;
+  loading = true;
 
 
   constructor(
@@ -26,6 +27,9 @@ export class AppListComponent implements OnInit {
       this.applications = data;
       console.log(this.applications);
     });
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
   }
 
   

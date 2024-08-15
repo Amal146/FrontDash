@@ -3,7 +3,6 @@ import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { LayoutService } from '../../../../@core/utils';
 import { OutlineData } from '../../../../@core/data/visitors-analytics';
-import { Incident } from '../../../../model/incident';
 import { IncidentService } from '../../../../service/incident/incident-service.service';
 
 @Component({
@@ -43,16 +42,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
 
   ngAfterViewInit(): void {
     this.getIncidentPerMonth();
-    this.theme.getJsTheme()
-      .pipe(
-        delay(1),
-        takeWhile(() => this.alive),
-      )
-      .subscribe(config => {
-        const eTheme: any = config.variables.visitors;
-
-        this.setOptions(eTheme);
-    });
+    
   }
 
   resolvedPerMonth : Number[] =[];
@@ -80,6 +70,16 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
            this.resolvedPerMonth.push(incidentsInMonth);
        }
        console.log(this.resolvedPerMonth); 
+       this.theme.getJsTheme()
+       .pipe(
+         delay(1),
+         takeWhile(() => this.alive),
+       )
+       .subscribe(config => {
+         const eTheme: any = config.variables.visitors;
+ 
+         this.setOptions(eTheme);
+       });
       })
       console.log(this.chartData.innerLine);
   }

@@ -13,6 +13,7 @@ import { Component, OnInit } from "@angular/core";
 })
 
 export class SolvedTasksTabComponent implements OnInit {
+  loading = true;
   constructor(
     private incidentService: IncidentService,
     private applicationService: ApplicationService
@@ -59,7 +60,9 @@ export class SolvedTasksTabComponent implements OnInit {
     this.getApplicationList();
 
     this.fillIncidents();
-
+    setTimeout(() => {
+      this.loading = false;
+    }, 4000);
     
 
   }
@@ -118,7 +121,7 @@ export class SolvedTasksTabComponent implements OnInit {
         valuePrepareFunction: (user: User) => (user ? `${user.email}` : "N/A"),
       },
       application: {
-        title: "Application",
+        title: "Project",
         type: "string",
         valuePrepareFunction: (application: Application) => application.name,
         editor: {

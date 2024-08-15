@@ -2,9 +2,9 @@
   <nb-layout-column>
     <div class="lists row">
       <div class="col-md-12 col-lg-6 col-xxxl-6">
-        <nb-card class="list-card">
+        <nb-card class="list-card" [nbSpinner]="loading" nbSpinnerStatus="primary">
           <nb-card-header style="text-decoration: underline"
-            >Our Applications</nb-card-header
+            >Our Projects</nb-card-header
           >
           <nb-card-body>
             <nb-list>
@@ -25,7 +25,7 @@
         nbPopoverPlacement="top"
         [nbPopover]="formComponent"
       >
-        Add new Application
+        Add new Project
       </button>
     </div>
   </nb-layout-column>

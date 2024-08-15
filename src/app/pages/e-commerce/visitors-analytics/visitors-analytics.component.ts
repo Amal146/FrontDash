@@ -16,6 +16,7 @@ export class ECommerceVisitorsAnalyticsComponent implements OnDestroy {
   pieChartValue: number;
   chartLegend: {iconColor: string; title: string}[];
   visitorsAnalyticsData: { innerLine: number[]; outerLine: OutlineData[]; };
+  loading = true;
 
   constructor(private themeService: NbThemeService,
               private visitorsAnalyticsChartService: VisitorsAnalyticsData) {
@@ -38,6 +39,9 @@ export class ECommerceVisitorsAnalyticsComponent implements OnDestroy {
         };
 
         this.pieChartValue = pieChartValue;
+        setTimeout(() => {
+          this.loading = false;
+        }, 7000);
       });
   }
 
