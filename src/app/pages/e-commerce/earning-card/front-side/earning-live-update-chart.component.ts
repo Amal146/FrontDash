@@ -69,6 +69,7 @@ export class EarningLiveUpdateChartComponent implements AfterViewInit, OnDestroy
       },
       yAxis: {
         type: 'value',
+        minInterval: 1,
         name: 'Number of Incidents', // Label for the Y-axis
       },
       series: [

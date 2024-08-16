@@ -64,7 +64,7 @@ export class ECommerceVisitorsAnalyticsChartComponent implements AfterViewInit, 
          const resolutionInMonth = res.filter(incident => incident.status === "Resolved");
          for (let month = 0; month < 12; month++) {
            const incidentsInMonth = resolutionInMonth.filter(incident => {
-             const resolvedAtDate = new Date(incident.reportedAt);
+             const resolvedAtDate = new Date(incident.resolvedAt);
                return resolvedAtDate.getMonth() == month;
           }).length;
            this.resolvedPerMonth.push(incidentsInMonth);
