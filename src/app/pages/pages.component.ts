@@ -54,7 +54,7 @@ export class PagesComponent {
               link: "/pages/layout/list",
             },
             {
-              title: "Applications List",
+              title: "Projects List",
               link: "/pages/layout/app-list",
             },
             {
@@ -74,6 +74,10 @@ export class PagesComponent {
             {
               title: "Assign new Tasks",
               link: "/pages/tables/open-incidents",
+            },
+            {
+              title: "Chat-bot",
+              link: "/pages/extra-components/chat",
             },
           ],
         },

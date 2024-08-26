@@ -6,7 +6,7 @@ import { Notification } from "../../../model/notification";
   selector: "ngx-popover-form",
   template: `
     <div class="notifications">
-      <label class="notifications-label">¤ Notifications ¤</label>
+      <label class="notifications-label">    ¤ Notifications ¤    </label>
       <div class="notify" *ngFor="let notification of notifications">
         <p>{{ notification.message }}</p>
         <button nbButton status="primary" (click)="markAsRead(notification.id)">
@@ -20,11 +20,11 @@ import { Notification } from "../../../model/notification";
     `
       .notifications {
         position: absolute;
-        color: white;
+        color: #3366ff;
         right: 0;
         top: 50px;
-        background: #3366ff;
-        border: 10px solid #00d68f;
+        background: #cfd6db;
+        border: 3px solid #00d68f;
         padding: 10px;
         width: 300px;
       }
@@ -33,18 +33,18 @@ import { Notification } from "../../../model/notification";
         position: absolute;
         top: -20px;
         left: 10px;
-        background: #3366ff;
+        background: #cfd6db;
         font-weight: bold;
       }
       .notify p {
-        color: white;
+        color: black;
       }
       p {
-        color: white;
+        color: black;
         font-size: 24px;
       }
       .notify {
-        border-bottom: 1px solid #3366ff;
+        border-bottom: 1px solid #222b45;
         padding: 10px 0;
       }
       .notify:last-child {

@@ -61,6 +61,14 @@ import { NotificationService } from "../../../service/notification/notification.
 })
 export class AssignPopoverFormComponent implements OnInit {
   incidentsIds: number[] = [];
+  notification = {
+    message: "",
+    is_read: false,
+    user : {
+      id : 0 ,
+    },
+    timestamp: new Date()
+  };
   resolvers: User[] = [];
   incidentForm = {
     id: 0,
@@ -115,6 +123,15 @@ export class AssignPopoverFormComponent implements OnInit {
               .updateIncident(this.incidentForm.id, this.incidentUpdated)
               .subscribe(
                 () => {
+                  
+                    this.userService.getUserById(this.assignedTo.id).subscribe((res) => {
+                        this.notification.message =  "A new task has been assigned to you" ;
+                        this.notification.is_read =  false;
+                        this.notification.user.id =  res.id;
+                        this.notification.timestamp =  new Date();
+                        this.notificationService.save(this.notification).subscribe();
+                   });
+                  
                 this.showSuccess();
                 setTimeout(() => {
                   window.location.reload(); 

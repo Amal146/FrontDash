@@ -33,7 +33,7 @@ export class ChatComponent {
       files: files,
       user: {
         name: 'Jonh Doe',
-        avatar: 'https://i.gifer.com/no.gif',
+        avatar: 'C:\Users\ajawahdou\Desktop\DashTemplate\ngx-admin\src\assets\images\alan.png',
       },
     });
     const botReply = this.chatService.reply(event.message);

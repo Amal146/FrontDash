@@ -12,18 +12,22 @@ import { NbAuthService } from "@nebular/auth";
 import { NotificationService } from "../../../service/notification/notification.service";
 import { PopoverNotifyComponent } from "../notification/popover-notify.component";
 import { Router } from "@angular/router";
+import { ChatService } from "../../../pages/extra-components/chat/chat.service";
+import { GeminiAiService } from "../../../service/gemini-ai/gemini-ai.service";
 
 @Component({
   selector: "ngx-header",
   styleUrls: ["./header.component.scss"],
   templateUrl: "./header.component.html",
+  providers: [ ChatService ],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  user: {} = {};
+  user: any = {};
+  showChat = false;
   showNotifications = false;
   unreadCount = 0;
   private destroy$: Subject<void> = new Subject<void>();
-  userPictureOnly: boolean = false;
+  userPictureOnly = false;
   currentTheme = "cosmic";
   userMenu = [{ title: "Log out", link: 'auth/logout' }];
   currentUser = localStorage.getItem("currentUser");
@@ -34,6 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     { value: "cosmic", name: "Cosmic" },
     { value: "corporate", name: "Corporate" },
   ];
+  messages: any[] = [];
 
   constructor(
     private notificationService: NotificationService,
@@ -43,11 +48,98 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private authService: NbAuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    protected chatService: ChatService,
+    private geminiAiService: GeminiAiService
+  ) {
+    this.messages = this.chatService.loadMessages();
+  }
 
   @ViewChild('notificationsInbox') notificationsInbox: ElementRef;
 
+
+  sendMessage(event: any) {
+    const files = !event.files ? [] : event.files.map((file) => {
+      return {
+        url: file.src,
+        type: file.type,
+        icon: 'nb-compose',
+      };
+    });
+  
+    this.messages.push({
+      text: event.message,
+      date: new Date(),
+      reply: true,
+      type: files.length ? 'file' : 'text',
+      files: files,
+      user: {
+        name: 'You',
+        avatar: 'https://i.gifer.com/no.gif',
+      },
+    });
+  
+    // Define the pattern for IT incident-related questions and greetings
+    const incidentKeywords = /incident|problem|issue|error|bug|failure|downtime|IT/gi;
+    const greetingKeywords = /hello|hi|hey|greetings|good morning|good afternoon|good evening/gi;
+  
+    // Check if the message is either a greeting or related to IT incidents
+    if (incidentKeywords.test(event.message) || greetingKeywords.test(event.message)) {
+      this.geminiAiService.generateText(event.message).then(
+        (responseText) => {
+          const botReply = {
+            text: responseText || 'I could not understand your request.',
+            date: new Date(),
+            reply: false,
+            type: 'text',
+            user: {
+              name: 'InciManage Bot',
+              avatar: 'https://i.gifer.com/SVKl.gif',
+            },
+          };
+  
+          setTimeout(() => {
+            this.messages.push(botReply);
+          }, 500);
+        },
+        (error) => {
+          console.error('AI service error:', error);
+          const botReply = {
+            text: 'Sorry, I am having trouble connecting to the AI service right now.',
+            date: new Date(),
+            reply: false,
+            type: 'text',
+            user: {
+              name: 'InciManage Bot',
+              avatar: 'https://i.gifer.com/SVKl.gif',
+            },
+          };
+  
+          setTimeout(() => {
+            this.messages.push(botReply);
+          }, 500);
+        }
+      );
+    } else {
+      // If the message is not recognized as an IT incident or greeting
+      const botReply = {
+        text: 'I only respond to questions about IT incidents.',
+        date: new Date(),
+        reply: false,
+        type: 'text',
+        user: {
+          name: 'InciManage Bot',
+          avatar: 'https://i.gifer.com/SVKl.gif',
+        },
+      };
+  
+      setTimeout(() => {
+        this.messages.push(botReply);
+      }, 500);
+    }
+  }
+  
+  
   ngOnInit() {
     const userId = this.currentUser ? JSON.parse(this.currentUser)["id"] : null;
 
@@ -77,7 +169,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.user = JSON.parse(localStorage.getItem('currentUser'));
       }
     });
-
   }
 
   toggleNotifications(): void {
@@ -103,6 +194,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.menuService.navigateHome();
     return false;
   }
-
-  
 }

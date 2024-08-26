@@ -14,6 +14,7 @@ import {
   NbIconModule,
   NbThemeModule,
   NbPopoverModule,
+  NbChatModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -43,6 +44,7 @@ import { DARK_THEME } from './styles/theme.dark';
 import { PopoverNotifyComponent } from './components/notification/popover-notify.component';
 
 const NB_MODULES = [
+  NbChatModule,
   NbLayoutModule,
   NbPopoverModule,
   NbMenuModule,
