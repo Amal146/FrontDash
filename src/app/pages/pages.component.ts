@@ -74,11 +74,7 @@ export class PagesComponent {
             {
               title: "Assign new Tasks",
               link: "/pages/tables/open-incidents",
-            },
-            {
-              title: "Chat-bot",
-              link: "/pages/extra-components/chat",
-            },
+            }
           ],
         },
       ];
