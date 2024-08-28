@@ -44,3 +44,4 @@ Thumbs.db
 # Ignore Angular cache files
 
 /.angular/cache
+/src/app/service/gemini-ai/gemini-ai.service.ts

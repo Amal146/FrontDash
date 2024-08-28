@@ -28,6 +28,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   unreadCount = 0;
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly = false;
+  hasUnreadMessages = false; // Flag to track unread messages
+
   currentTheme = "cosmic";
   userMenu = [{ title: "Log out", link: 'auth/logout' }];
   currentUser = localStorage.getItem("currentUser");
@@ -67,6 +69,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       };
     });
   
+    // Push the user message
     this.messages.push({
       text: event.message,
       date: new Date(),
@@ -79,8 +82,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
       },
     });
   
+    // Add a note indicating the message is sent and a reply will be provided soon
+    this.messages.push({
+      text: 'Message sent. We will reply to you soon.',
+      date: new Date(),
+      reply: false,
+      type: 'text',
+      user: {
+        name: 'InciManage Bot',
+        avatar: 'https://i.gifer.com/SVKl.gif',
+      },
+    });
+  
     // Define the pattern for IT incident-related questions and greetings
-    const incidentKeywords = /incident|problem|issue|error|bug|failure|downtime|IT/gi;
+    const incidentKeywords = /incident|problem|issue|error|bug|failure|downtime/gi;
     const greetingKeywords = /hello|hi|hey|greetings|good morning|good afternoon|good evening/gi;
   
     // Check if the message is either a greeting or related to IT incidents
@@ -98,6 +113,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
             },
           };
   
+          if (!this.showChat) {
+            // Set the flag for unread messages if the chatbot is closed
+            this.hasUnreadMessages = true;
+          }
+  
           setTimeout(() => {
             this.messages.push(botReply);
           }, 500);
@@ -114,6 +134,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
               avatar: 'https://i.gifer.com/SVKl.gif',
             },
           };
+  
+          if (!this.showChat) {
+            // Set the flag for unread messages if the chatbot is closed
+            this.hasUnreadMessages = true;
+          }
   
           setTimeout(() => {
             this.messages.push(botReply);
@@ -133,11 +158,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
         },
       };
   
+      if (!this.showChat) {
+        // Set the flag for unread messages if the chatbot is closed
+        this.hasUnreadMessages = true;
+      }
+  
       setTimeout(() => {
         this.messages.push(botReply);
       }, 500);
     }
   }
+  
   
   
   ngOnInit() {

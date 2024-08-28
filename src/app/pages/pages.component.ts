@@ -5,10 +5,12 @@ import { NbMenuItem, NbMenuService } from "@nebular/theme";
   selector: "ngx-pages",
   styleUrls: ["pages.component.scss"],
   template: `
+  
     <ngx-one-column-layout>
       <nb-menu [items]="menu" tag="myMainMenu"></nb-menu>
       <router-outlet></router-outlet>
     </ngx-one-column-layout>
+  
   `,
     changeDetection: ChangeDetectionStrategy.OnPush, 
 })

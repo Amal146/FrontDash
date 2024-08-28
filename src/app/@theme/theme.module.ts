@@ -15,6 +15,7 @@ import {
   NbThemeModule,
   NbPopoverModule,
   NbChatModule,
+  NbWindowModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';

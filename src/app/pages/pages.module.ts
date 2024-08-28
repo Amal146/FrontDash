@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { NbCardModule, NbMenuModule } from '@nebular/theme';
+import { NbCardModule, NbLayoutModule, NbMenuModule } from '@nebular/theme';
 import { ThemeModule } from '../@theme/theme.module';
 import { PagesComponent } from './pages.component';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -9,6 +9,7 @@ import { MiscellaneousModule } from './miscellaneous/miscellaneous.module';
 
 @NgModule({
   imports: [
+    NbLayoutModule,
     PagesRoutingModule,
     ThemeModule,
     NbMenuModule,

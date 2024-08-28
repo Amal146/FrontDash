@@ -51,7 +51,7 @@ export class AppResInciTableComponent implements OnInit {
       this.incidentService
         .getIncidentsByAppId(appId)
        .subscribe((data) => {
-        const openIncidents = data.filter(incident => incident.status === 'Closed');
+        const openIncidents = data.filter(incident => incident.status === 'Resolved');
             this.incidents = [...this.incidents, ...openIncidents];
        });
    }

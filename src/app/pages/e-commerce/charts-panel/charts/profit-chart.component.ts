@@ -198,12 +198,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
     const options = this.options;
     const series = this.getNewSeries(options.series, profitChartData.data);
 
-    this.echartsIntance.setOption({
-      series: series,
-      xAxis: {
-        data: this.profitChartData.chartLabel,
-      },
-    });
+    
   }
 
   getNewSeries(series, data: number[][]) {

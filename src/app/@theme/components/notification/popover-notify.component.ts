@@ -5,7 +5,7 @@ import { Notification } from "../../../model/notification";
 @Component({
   selector: "ngx-popover-form",
   template: `
-    <div class="notifications">
+  <div class="notifications"> 
       <label class="notifications-label">    ¤ Notifications ¤    </label>
       <div class="notify" *ngFor="let notification of notifications">
         <p>{{ notification.message }}</p>
@@ -14,7 +14,7 @@ import { Notification } from "../../../model/notification";
         </button>
       </div>
       <p *ngIf="!notifications?.length">No notifications right now.</p>
-    </div>
+</div> 
   `,
   styles: [
     `
