@@ -39,7 +39,7 @@ export class ListComponent implements OnInit {
     });
     setTimeout(() => {
       this.loading = false;
-    }, 4000);
+    }, 500);
 
   }
 }

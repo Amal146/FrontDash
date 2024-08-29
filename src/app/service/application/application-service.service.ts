@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Application } from '../../model/application';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,23 @@ import { Application } from '../../model/application';
 export class ApplicationService {
 
   private basUrl = "http://localhost:8080/api"
+  private applicationsCache: Application[] | null = null;
+
 
   constructor(private httpClient: HttpClient) {
   }
 
   //GET all applications
   getAppList(): Observable<Application[]> {
-    return this.httpClient.get<Application[]>(`${this.basUrl}/findAllApplications`);
+    if (this.applicationsCache) {
+      // Return cached data as an Observable
+      return of(this.applicationsCache);
+    } else {
+      // Fetch data from API and cache it
+      return this.httpClient.get<Application[]>(`${this.basUrl}/findAllApplications`).pipe(
+        tap(data => this.applicationsCache = data)
+      );
+    }
   }
 
   //GET Application by Id

@@ -100,6 +100,10 @@ export class PagesComponent {
               title: "Solved Incidents",
               link: "/pages/tables/app-resolved-incidents",
             },
+            {
+              title: "Report new Incident",
+              link: "/pages/forms/inputs",
+            }
           ],
         },
       ];

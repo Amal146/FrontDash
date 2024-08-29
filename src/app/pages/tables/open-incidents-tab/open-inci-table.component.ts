@@ -5,6 +5,8 @@ import { User } from "../../../model/user";
 import { Application } from "../../../model/application";
 import { ApplicationService } from "../../../service/application/application-service.service";
 import { AssignPopoverFormComponent } from "./assign-form.component";
+import { LocalDataSource, ServerDataSource } from "ng2-smart-table";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "ngx-smart-table",
@@ -14,10 +16,17 @@ import { AssignPopoverFormComponent } from "./assign-form.component";
 export class OpenInciTableComponent implements OnInit {
   loading= true;
   constructor(
+    private httpClient: HttpClient,
     private incidentService: IncidentService,
     private applicationService: ApplicationService
-  ) {}
-
+  ) {
+    this.initData()
+  }
+  source: LocalDataSource = new LocalDataSource();
+  pagesSize = 30;
+  currentPage = 0 ;
+  totaCount = 0;
+  totalItems: number;
   incidents: Incident[] = [];
   applicationOptions!: String[];
   currentUser = localStorage.getItem("currentUser");
@@ -27,6 +36,18 @@ export class OpenInciTableComponent implements OnInit {
   statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
   severityOptions = ["Low", "Medium", "High", "Critical"];
   formComponent = AssignPopoverFormComponent;
+
+
+  initData() {
+    this.source = new ServerDataSource(this.httpClient, {
+      // http://localhost:8080/api/findAllIncidentsByPage?pageNo=0&pageSize=10
+      dataKey: 'content',
+      endPoint: 'http://localhost:8080/api/findAllIncidentsByPage',
+      pagerPageKey: 'pageNo', // this should be page number param name in endpoint (request not response) for example 'page'
+      pagerLimitKey: 'pageSize', // this should page size param name in endpoint (request not response)
+      totalKey: 'totalElements', // this is total records count in response, this will handle pager
+    });
+  }
 
   getApplicationList() {
     this.applicationService.getAppList().subscribe(
@@ -47,25 +68,43 @@ export class OpenInciTableComponent implements OnInit {
       : [];
   }
 
-  fillIncidents() {
-    this.incidentService.getIncidentList().subscribe((data) => {
-      const openIncidents = data.filter(
-        (incident) => incident.status === "Open" && incident.resolvedBy === null 
-      );
-      this.incidents = [...this.incidents, ...openIncidents];
-    });
+  fillIncidents(pageNo: number = 0, pageSize: number = 20) {
+    this.incidentService.getIncidentListPerPage(pageNo, pageSize).subscribe(
+      (page) => {
+        this.incidents = page.content;
+        this.totalItems = page.totalElements; 
+        this.loading = false;
+        console.log("display 20 records");
+      },
+      (error) => {
+        console.error("Error fetching paginated incidents:", error);
+        this.loading = false;
+      }
+    );
   }
 
-  ngOnInit() {
-    this.getApplicationList();
+  
 
-    this.fillIncidents();
-    setTimeout(() => {
-      this.loading = false;
-    }, 4000);
+  ngOnInit() {
+    // this.getApplicationList();
+
+    // this.fillIncidents();
+    // setTimeout(() => {
+    //   this.loading = false;
+    // }, 4000);
+  }
+
+  onPageChange(event) {
+    const { page, perPage } = event; 
+    this.loading = true; 
+    this.fillIncidents(page - 1, perPage); // Load the corresponding 
   }
 
   settings = {
+    pager: {
+      display: true,
+      perPage: 10,
+    },
     hideSubHeader: true,
     actions: false,
     add: {

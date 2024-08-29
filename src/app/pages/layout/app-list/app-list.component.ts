@@ -3,7 +3,6 @@ import { Application } from '../../../model/application';
 import { ApplicationService } from '../../../service/application/application-service.service';
 import { PopoverFormComponent } from './popover-form.component';
 
-
 @Component({
   selector: 'ngx-list',
   templateUrl: 'app-list.component.html',
@@ -15,23 +14,14 @@ export class AppListComponent implements OnInit {
   formComponent = PopoverFormComponent;
   loading = true;
 
-
-  constructor(
-    private appService: ApplicationService,
-
-  ) {}
+  constructor(private appService: ApplicationService) {}
 
   ngOnInit(): void {
-    console.log(localStorage.getItem('CurrentUser'))
     this.appService.getAppList().subscribe(data => {
       this.applications = data;
       console.log(this.applications);
+      this.loading = false; // Hide loading spinner or similar
     });
-    setTimeout(() => {
-      this.loading = false;
-    }, 4000);
   }
-
-  
-  
 }
+

@@ -1,23 +1,55 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Incident } from '../../model/incident';
+import { tap } from 'rxjs/operators';
+
+
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
 
 @Injectable({
   providedIn: 'root'
 })
 
+
+
 export class IncidentService {
 
   private basUrl = "http://localhost:8080/api"
+  private incidentsCache: Incident[] | null = null;
+
 
   constructor(private httpClient: HttpClient) {
   }
 
    //GET all incidents
   getIncidentList(): Observable<Incident[]> {
-    return this.httpClient.get<Incident[]>(`${this.basUrl}/findAllIncidents`);
+    if (this.incidentsCache) {
+      // Return cached data as an Observable
+      return of(this.incidentsCache);
+    } else {
+      // Fetch data from API and cache it
+      return this.httpClient.get<Incident[]>(`${this.basUrl}/findAllIncidents`).pipe(
+        tap(data => this.incidentsCache = data)
+      );
+    }
   }
+
+
+  //GET all incidents Per page
+  getIncidentListPerPage(pageNo: number, pageSize: number): Observable<Page<Incident>> {
+    return this.httpClient.get<Page<Incident>>(
+      `${this.basUrl}/findAllIncidentsByPage?pageNo=${pageNo}&pageSize=${pageSize}`
+    );
+  }
+  
 
    //POST new incident
   createIncident(incident: Object): Observable<Object> {

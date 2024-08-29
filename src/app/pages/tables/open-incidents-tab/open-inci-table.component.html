@@ -1,14 +1,11 @@
 <nb-layout>
   <nb-layout-column>
-    <nb-card [nbSpinner]="loading" nbSpinnerStatus="primary">
+    <nb-card  nbSpinnerStatus="primary">
       <nb-card-header> Open Incidents Table </nb-card-header>
 
       <nb-card-body>
-        <ng2-smart-table
-          [settings]="settings"
-          [source]="incidents"
-        >
-        </ng2-smart-table>
+        <ng2-smart-table [settings]="settings" [source]="source"></ng2-smart-table>
+
       </nb-card-body>
       <br>
       <br>
