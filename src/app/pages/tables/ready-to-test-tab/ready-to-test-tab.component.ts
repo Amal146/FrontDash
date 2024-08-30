@@ -13,13 +13,14 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './ready-to-test-tab.component.html',
   styleUrls: ['./ready-to-test-tab.component.scss']
 })
-export class ReadyToTestTabComponent  {
+export class ReadyToTestTabComponent implements OnInit {
   loading= true;
   constructor(
     private httpClient: HttpClient,
   ) {
-    this.initData()
-    console.log(this.source);
+  }
+  ngOnInit(): void {
+    this.initData();
   }
   pagesSize = 30;
   currentPage = 0 ;
@@ -38,7 +39,7 @@ export class ReadyToTestTabComponent  {
   source: LocalDataSource = new LocalDataSource();
 
   initData() {
-    const endPoint = 'http://localhost:8080/api/findAllIncidentsByPage?&status=Readytotest';
+    const endPoint = 'http://localhost:8080/api/findAllIncidentsByPage?status=Readytotest&pageNo=0&pageSize=10';
   
     this.source = new ServerDataSource(this.httpClient, {
       dataKey: 'content',
@@ -48,6 +49,8 @@ export class ReadyToTestTabComponent  {
       totalKey: 'totalElements',
     });
   }
+  
+  
   
   
   settings = {
