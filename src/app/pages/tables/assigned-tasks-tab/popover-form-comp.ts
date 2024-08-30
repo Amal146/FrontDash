@@ -90,7 +90,7 @@ export class FinishTaskPopoverFormComponent implements OnInit {
     this.updatedTask.application.id = this.rowData ? this.rowData["application"]["id"] : 0;
     this.updatedTask.reportedBy.id = this.rowData ? this.rowData["reportedBy"]["id"] : 0;
     this.updatedTask.resolvedBy.id = this.rowData ? this.rowData["resolvedBy"]["id"] : 0;
-    this.updatedTask.status = "Resolved";
+    this.updatedTask.status = "Ready_to_Test";
     this.updatedTask.solutionDescription = this.solution;
     this.updatedTask.resolvedAt = new Date();
 

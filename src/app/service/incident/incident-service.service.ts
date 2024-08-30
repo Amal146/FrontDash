@@ -43,12 +43,17 @@ export class IncidentService {
   }
 
 
-  //GET all incidents Per page
-  getIncidentListPerPage(pageNo: number, pageSize: number): Observable<Page<Incident>> {
-    return this.httpClient.get<Page<Incident>>(
-      `${this.basUrl}/findAllIncidentsByPage?pageNo=${pageNo}&pageSize=${pageSize}`
-    );
+// GET all incidents per page with optional status filter
+getIncidentListPerPage(pageNo: number, pageSize: number, status?: string): Observable<Page<Incident>> {
+  let url = `${this.basUrl}/findAllIncidentsByPage?pageNo=${pageNo}&pageSize=${pageSize}`;
+  
+  if (status) {
+    url += `&status=${status}`;
   }
+
+  return this.httpClient.get<Page<Incident>>(url);
+}
+
   
 
    //POST new incident

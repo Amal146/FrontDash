@@ -70,7 +70,7 @@ export class ChartPanelHeaderComponent implements OnDestroy, OnChanges {
       this.legendItems = [
         {
           iconColor: this.orderProfitLegend.firstItem,
-          title: 'Other',
+          title: 'Bug',
         },
         {
           iconColor: this.orderProfitLegend.secondItem,
@@ -78,7 +78,7 @@ export class ChartPanelHeaderComponent implements OnDestroy, OnChanges {
         },
         {
           iconColor: this.orderProfitLegend.thirdItem,
-          title: 'Bug',
+          title: 'Other',
         },
       ];
     }

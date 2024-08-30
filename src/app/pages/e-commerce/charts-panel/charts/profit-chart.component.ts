@@ -21,7 +21,9 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
   private alive = true;
 
   echartsIntance: any;
-  options: any = {};
+  options: any = {
+    series: []
+  };
 
   constructor(private theme: NbThemeService,
                private incidentService: IncidentService,
@@ -139,7 +141,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
       ],
       series: [
         {
-          name: 'Bugs',
+          name: 'Other',
           type: 'bar',
           barGap: 0,
           barWidth: '20%',
@@ -174,7 +176,7 @@ export class ProfitChartComponent implements AfterViewInit, OnDestroy, OnChanges
           data: this.profitChartData.data[1],
         },
         {
-          name: 'Other',
+          name: 'Bugs',
           type: 'bar',
           barWidth: '20%',
           itemStyle: {

@@ -26,7 +26,9 @@ export class OrdersChartComponent implements AfterViewInit, OnDestroy, OnChanges
   private alive = true;
 
   echartsIntance: any;
-  option: any;
+  option: any = {
+    series: []
+  };
 
   ngOnChanges(): void {
     if (this.option) {

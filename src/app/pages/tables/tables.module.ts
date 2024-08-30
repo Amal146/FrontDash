@@ -13,6 +13,8 @@ import { AppInciTableComponent } from './app-assigned-incidents-tab/app-inci-tab
 import { SolvedTasksTabComponent } from './solved-tasks-tab/solved-tasks-tab.component';
 import { MyCustomComponent } from './assigned-tasks-tab/custom-component';
 import { FinishTaskPopoverFormComponent } from './assigned-tasks-tab/popover-form-comp';
+import { ReadyToTestTabComponent } from './ready-to-test-tab/ready-to-test-tab.component';
+import { AssignTestPopoverFormComponent } from './ready-to-test-tab/assign-test-form.component';
 
 @NgModule({
   imports: [
@@ -36,12 +38,14 @@ import { FinishTaskPopoverFormComponent } from './assigned-tasks-tab/popover-for
     FinishTaskPopoverFormComponent,
     FsIconComponent,
     MyCustomComponent,
+    AssignTestPopoverFormComponent,
     AssignPopoverFormComponent,
     AssignedTasksTabComponent,
     OpenInciTableComponent,
     AppResInciTableComponent,
     AppInciTableComponent,
     SolvedTasksTabComponent,
+    ReadyToTestTabComponent,
 
   ],
   entryComponents: [

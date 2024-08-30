@@ -11,6 +11,7 @@ import { AssignPopoverFormComponent } from './open-incidents-tab/assign-form.com
 import { AssignedTasksTabComponent } from './assigned-tasks-tab/assigned-tasks-tab.component';
 import { SolvedTasksTabComponent } from './solved-tasks-tab/solved-tasks-tab.component';
 import { FinishTaskPopoverFormComponent } from './assigned-tasks-tab/popover-form-comp';
+import { ReadyToTestTabComponent } from './ready-to-test-tab/ready-to-test-tab.component';
 
 const routes: Routes = [{
   path: '',
@@ -44,6 +45,10 @@ const routes: Routes = [{
       path: 'solved-tasks',
       component: SolvedTasksTabComponent,
     },
+    {
+      path: 'ready-to-test',
+      component: ReadyToTestTabComponent,
+    },
   ],
 }];
 
@@ -63,4 +68,5 @@ export const routedComponents = [
   SmartTableComponent,
   TreeGridComponent,
   AppInciTableComponent,
+  ReadyToTestTabComponent,
 ];

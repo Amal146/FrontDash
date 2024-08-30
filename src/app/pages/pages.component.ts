@@ -35,7 +35,7 @@ export class PagesComponent {
   }
   getMenuItemsBasedOnRole(role: string | null): NbMenuItem[] {
     console.log("add items");
-    if (role?.includes("ROLE_ADMIN")) {
+    if (role?.includes("ROLE_ADMIN") || role?.includes("ROLE_TESTER")) {
       return [
         {
           title: "Home",
@@ -76,6 +76,10 @@ export class PagesComponent {
             {
               title: "Assign new Tasks",
               link: "/pages/tables/open-incidents",
+            },
+            {
+              title: "Assign new Test",
+              link: "/pages/tables/ready-to-test",
             }
           ],
         },

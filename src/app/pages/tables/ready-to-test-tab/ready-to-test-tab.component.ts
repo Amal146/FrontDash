@@ -1,28 +1,26 @@
-import { Component, OnInit } from "@angular/core";
-import { Incident } from "../../../model/incident";
-import { IncidentService } from "../../../service/incident/incident-service.service";
-import { User } from "../../../model/user";
-import { Application } from "../../../model/application";
-import { ApplicationService } from "../../../service/application/application-service.service";
-import { AssignPopoverFormComponent } from "./assign-form.component";
-import { LocalDataSource, ServerDataSource } from "ng2-smart-table";
-import { HttpClient } from "@angular/common/http";
+import { Component, OnInit } from '@angular/core';
+import { User } from '../../../model/user';
+import { Application } from '../../../model/application';
+import { IncidentService } from '../../../service/incident/incident-service.service';
+import { ApplicationService } from '../../../service/application/application-service.service';
+import { Incident } from '../../../model/incident';
+import { AssignTestPopoverFormComponent } from './assign-test-form.component';
+import { LocalDataSource, ServerDataSource } from 'ng2-smart-table';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: "ngx-smart-table",
-  templateUrl: "./open-inci-table.component.html",
-  styleUrls: ["./open-inci-table.component.scss"],
+  selector: 'ngx-ready-to-test-tab',
+  templateUrl: './ready-to-test-tab.component.html',
+  styleUrls: ['./ready-to-test-tab.component.scss']
 })
-export class OpenInciTableComponent implements OnInit {
+export class ReadyToTestTabComponent  {
   loading= true;
   constructor(
     private httpClient: HttpClient,
-    private incidentService: IncidentService,
-    private applicationService: ApplicationService
   ) {
     this.initData()
+    console.log(this.source);
   }
-  source: LocalDataSource = new LocalDataSource();
   pagesSize = 30;
   currentPage = 0 ;
   totaCount = 0;
@@ -35,68 +33,23 @@ export class OpenInciTableComponent implements OnInit {
   // Define options for severity and status
   statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
   severityOptions = ["Low", "Medium", "High", "Critical"];
-  formComponent = AssignPopoverFormComponent;
+  formComponent = AssignTestPopoverFormComponent;
 
+  source: LocalDataSource = new LocalDataSource();
 
   initData() {
+    const endPoint = 'http://localhost:8080/api/findAllIncidentsByPage?&status=Readytotest';
+  
     this.source = new ServerDataSource(this.httpClient, {
-      // http://localhost:8080/api/findAllIncidentsByPage?pageNo=0&pageSize=10
       dataKey: 'content',
-      endPoint: 'http://localhost:8080/api/findAllIncidentsByPage',
-      pagerPageKey: 'pageNo', // this should be page number param name in endpoint (request not response) for example 'page'
-      pagerLimitKey: 'pageSize', // this should page size param name in endpoint (request not response)
-      totalKey: 'totalElements', // this is total records count in response, this will handle pager
+      endPoint: endPoint,
+      pagerPageKey: 'pageNo',
+      pagerLimitKey: 'pageSize',
+      totalKey: 'totalElements',
     });
   }
-
-  getApplicationList() {
-    this.applicationService.getAppList().subscribe(
-      (apps) => {
-        if (apps) {
-          this.applicationOptions = apps.map((app) => app.name);
-          console.log(this.applicationOptions);
-        } else {
-          console.error("No applications found");
-        }
-      },
-      (error) => {
-        console.error("Error fetching applications:", error);
-      }
-    );
-    return this.applicationOptions
-      ? this.applicationOptions.map((app) => ({ value: app, title: app }))
-      : [];
-  }
-
-  fillIncidents(pageNo: number = 0, pageSize: number = 20) {
-    this.loading = true; // Set loading to true before making the request
   
-    this.incidentService.getIncidentListPerPage(pageNo, pageSize).subscribe(
-      (page) => {
-        // Filter incidents before assigning to this.incidents
-        this.incidents = page.content.filter(incident => incident.status === 'Open');
-        this.totalItems = page.totalElements;
-        this.loading = false;
-        console.log(`Displaying ${pageSize} records`);
-      },
-      (error) => {
-        console.error("Error fetching paginated incidents:", error);
-        this.loading = false;
-      }
-    );
-  }
-
   
-
-  ngOnInit() {
-  }
-
-  onPageChange(event) {
-    const { page, perPage } = event; 
-    this.loading = true; 
-    this.fillIncidents(page - 1, perPage); // Load the corresponding 
-  }
-
   settings = {
     pager: {
       display: true,

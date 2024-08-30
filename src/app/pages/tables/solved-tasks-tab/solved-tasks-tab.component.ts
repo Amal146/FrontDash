@@ -62,7 +62,7 @@ export class SolvedTasksTabComponent implements OnInit {
     this.fillIncidents();
     setTimeout(() => {
       this.loading = false;
-    }, 4000);
+    }, 1000);
     
 
   }

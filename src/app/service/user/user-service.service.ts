@@ -14,7 +14,7 @@ export class UserService {
   private devCache: User[] | null = null;
   private managerCache: User[] | null = null;
   private adminCache: User[] | null = null;
-
+  private testerCache: User[] | null = null;
 
   constructor(private httpClient: HttpClient) {
   }
@@ -91,6 +91,14 @@ getUsersByRoleId(roleId: number) : Observable<User[]> {
     } else {
       return this.httpClient.get<User[]>(`${this.basUrl}/UsersByRoleId?roleId=${roleId}`).pipe(
         tap(data => this.adminCache = data));
+    }
+  }
+  else if (roleId == 4 ){
+    if(this.testerCache) {
+      return of(this.testerCache);
+    } else {
+      return this.httpClient.get<User[]>(`${this.basUrl}/UsersByRoleId?roleId=${roleId}`).pipe(
+        tap(data => this.testerCache = data));
     }
   }
 } 

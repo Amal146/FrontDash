@@ -4,18 +4,7 @@ import { Notification } from "../../../model/notification";
 
 @Component({
   selector: "ngx-popover-form",
-  template: `
-  <div class="notifications"> 
-      <label class="notifications-label">    ¤ Notifications ¤    </label>
-      <div class="notify" *ngFor="let notification of notifications">
-        <p>{{ notification.message }}</p>
-        <button nbButton status="primary" (click)="markAsRead(notification.id)">
-          Mark as read
-        </button>
-      </div>
-      <p *ngIf="!notifications?.length">No notifications right now.</p>
-</div> 
-  `,
+  templateUrl: './notification.component.html',
   styles: [
     `
       .notifications {
@@ -26,10 +15,10 @@ import { Notification } from "../../../model/notification";
         background: #cfd6db;
         border: 3px solid #00d68f;
         padding: 10px;
-        width: 300px;
+        width: 400px;
       }
       .notifications-label {
-        font-size: 24px;
+        font-size: 36px;
         position: absolute;
         top: -20px;
         left: 10px;
@@ -41,7 +30,7 @@ import { Notification } from "../../../model/notification";
       }
       p {
         color: black;
-        font-size: 24px;
+        font-size: 20px;
       }
       .notify {
         border-bottom: 1px solid #222b45;
